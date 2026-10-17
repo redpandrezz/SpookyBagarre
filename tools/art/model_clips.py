@@ -64,7 +64,7 @@ def main(args):
         X = MT.Transfer(src, tgt, tracks(sj, sb, ref))
         for a in anims:
             tr, tmax = tracks(sj, sb, a)
-            times, rot, hips = X.bake(tr, tmax)
+            times, rot, hips = X.bake(tr, tmax, center=False)   # the source is packed: its clips are in place already
             out = {'name': a['name'], 'channels': [], 'samplers': []}
             ti = T.add_data(j, b, times, 'SCALAR', minmax=True)
             for bone, q in rot.items():

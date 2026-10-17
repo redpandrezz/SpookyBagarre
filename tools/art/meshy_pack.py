@@ -175,11 +175,21 @@ CHARACTERS = {
         },
     },
     # modelled on the Meshy website (high poly), decimated with a baked normal map (meshy_decimate.py), rigged with
-    # `meshy.py rig --file`; his moves are BIDO's for now: BIDO's clips are copied from assets/models/bido.glb
-    # afterwards (tools/art/model_clips.py), only the walk and the run come from his rig
+    # `meshy.py rig --file`; then BIDO's and Skanky's clips are copied onto him from their packed models
+    # (tools/art/model_clips.py: docs/NOUVEAU_PERSO.md); his own: the walk, the run and the library lots below
     'kerrian': {
         'height': 1.85,
-        'files': {'basic_walking': ['walk'], 'basic_running': ['run']},
+        'files': {
+            'basic_walking': ['walk'], 'basic_running': ['run'],
+            # library lot (18 credits, 17 Oct 2026): right hook, left hook, knee, charged axe chop, over-the-shoulder
+            # throw (the syringe dart), charged ground slam (the giant fork)
+            'lotA': ['m_rhook', 'm_lhook', 'm_knee', 'm_axechop', 'm_dart', 'm_forkslam'],
+        },
+        'derive': {
+            # the hollow dash (text to motion) flies flat like a superhero: stood up straight and stiff (tilt), in place
+            # (the sim moves him up)
+            'a_hdash': ('m_hdash', 0.0, 1.2, {'still': True, 'tilt': 0.1}),
+        },
     },
 }
 

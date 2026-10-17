@@ -16,7 +16,7 @@ ENTITIES.burn = {
     if (!V || V.out || V.state === 'dead' || V.state === 'respawn') { e.dead = true; return; }
     e.x = V.x; e.y = V.y + V.height * 0.5; e.z = V.z;
     if (e.t % e.every === 0) e.tickNow = 1;
-    if (e.t % 6 === 0) W.emit('burnFx', { x: V.x, y: V.y + V.height * 0.5, z: V.z, s: e.vic, p: e.look === 'poison' ? 1 : 0 });
+    if (e.t % 6 === 0) W.emit('burnFx', { x: V.x, y: V.y + V.height * 0.5, z: V.z, s: e.vic, p: e.look === 'poison' ? 1 : e.look === 'coffee' ? 2 : 0 });
   },
   hits(e, W) {
     if (!e.tickNow) return null;

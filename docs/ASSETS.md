@@ -126,6 +126,8 @@ Pandrezz, Aboueb, Tices, OMFU, Lolobiscotto, J'san, Nymano, BIDO, Epektase, PPRO
 
 ## Ajouter un personnage
 
+La recette à jour pour un perso Meshy (site de Meshy, réduction avec normal map cuite, rig, moveset emprunté) : `docs/NOUVEAU_PERSO.md`. Ci-dessous, l'ancienne chaîne Tripo.
+
 1. Images → Tripo → mesures → `rigs/<id>.json` → `rig.py` (ci-dessus).
 2. `src/sim/chars/<id>.js` : stats, coups normaux (`normals()`), 4 spéciaux ; l'ajouter dans `src/sim/chars/index.js`.
 3. `src/render/rig/chars.js` (ou `friendRigs.js`) : son entrée `RIGS.<id>`.

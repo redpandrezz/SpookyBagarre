@@ -85,6 +85,15 @@ function slickObj(e) {
 }
 
 export const PASS_BUILD = {
+  // Kerrian's syringe thrown like a dart (its needle forward: +z, the way it flies)
+  syringe: () => {
+    const r = [Math.PI / 2, 0, 0];
+    return new THREE.Group().add(
+      mesh(G.cyl(0.05, 0.05, 0.3, 10), mat('#e8f4ff', { transparent: true, opacity: 0.8 }), [0, 0, 0], r),
+      mesh(G.cyl(0.038, 0.038, 0.26, 8), mat('#ffb000', { emissive: '#4a3000' }), [0, 0, 0.01], r),
+      mesh(G.cyl(0.07, 0.07, 0.02, 10), mat('#d8dde4'), [0, 0, -0.2], r),
+      mesh(G.cyl(0.006, 0.006, 0.16, 4), mat('#c0c6cf'), [0, 0, 0.23], r));
+  },
   // PPROD's money thrown, spinning; his old PC tumbling
   coin: () => spinning(made('coin', 1.4), 'y'), coinpile: () => spinning(made('coinpile', 1.3), 'z'), billwad: () => spinning(made('billwad', 1.3), 'z'),
   diamond: () => spinning(made('diamond', 1.4), 'y'), goldbar: () => spinning(made('goldbar', 1.3), 'z'),

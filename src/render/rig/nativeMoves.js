@@ -359,7 +359,35 @@ export function keysAt(keys, f) {
   return keys[keys.length - 1][1];
 }
 
-// Kerrian plays BIDO's moveset with BIDO's clips (copied onto his rig by tools/art/model_clips.py)
-NATIVE_MOVES.kerrian = NATIVE_MOVES.bido;
-EMOTES.kerrian = EMOTES.bido;
+// Kerrian: BIDO's and Skanky's clips copied onto his rig (tools/art/model_clips.py); the moves without one of their
+// own (hook, axe, coffee, fork, the syringe) keep the shared clips of their pose (CLIP_MOVES) or the procedural one
+NATIVE_MOVES.kerrian = {
+  jab1: { clip: 'm_rjab', from: 0.3, strike: 0.6, to: 1.0 },                // right
+  jab2: { clip: 'm_ljab', from: 0.15, strike: 0.47, to: 0.9 },              // left (then the headbutt: NATIVE_POSES)
+  ftilt: { clip: 'm_lhook', from: 0.1, strike: 0.32, to: 0.7 },             // the hook (library lot, 17 Oct 2026)
+  utilt: { clip: 'm_knee', from: 0.45, strike: 0.9, to: 1.5 },              // the knee
+  dtilt: { clip: 'm_axe2', from: 0.2, strike: 0.72, to: 1.4 },             // the axe, both hands locked (text to motion)
+  dsmash: { clip: 'm_axe2', from: 0.15, strike: 0.75, to: 1.6 },
+  dashattack: { clip: 'm_rhook', from: 0.2, strike: 0.62, to: 1.2 },        // the charged hook
+  sp_n: { clip: 'm_dart', keys: [[0, 1.9], [9, 2.75], [28, 3.35]] },        // the syringe thrown like a dart
+  insulin: { clip: 'm_inject', keys: [[0, 0.4], [8, 0.95], [20, 1.5], [44, 2.6]] }, // the shot in his arm (text to motion)
+  sp_s: { clip: 'm_coffee', keys: [[0, 0.3], [12, 0.8], [30, 1.35], [46, 2.2]] },   // the hot coffee thrown (text to motion)
+  // the ultimate, BOOGIE ROCKET: the bazooka up on his shoulder (intro), the shot and its recoil, held while it hits
+  ult_a: { clip: 'm_bazooka', keys: [[0, 0.3], [40, 1.6], [54, 1.8]] },
+  ult_b: { clip: 'm_bazooka', keys: [[0, 1.8], [6, 2.05], [26, 2.35]] },
+  ult_c: { clip: 'm_bazooka', keys: [[0, 2.35], [60, 2.9]] },
+  sp_d: { clip: 'm_forkslam', keys: [[0, 0.6], [10, 1.35], [17, 1.6], [40, 2.6]] }, // he calls the giant fork down
+  smash: { clip: 'm_straightkick', from: 0.3, strike: 0.72, to: 1.2 },      // the Paraboot kick
+  usmash: { clip: 'm_uppercut', from: 0.3, strike: 0.6, to: 0.95 },
+  nair: { clip: 'a_spinkick', from: 0.2, strike: 0.9, to: 1.2 },
+  fair: { clip: 'a_flykick', from: 0.2, strike: 0.55, to: 0.9 },
+  bair: { clip: 'a_spinkick', from: 0.2, strike: 0.6, to: 1.0 },
+  uair: { clip: 'm_highkick', from: 0.6, strike: 1.05, to: 1.5 },
+  dair: { clip: 'a_jumppunch', from: 0.1, strike: 0.45, to: 0.8 },
+  grab: { clip: 'm_grabthrow', from: 0.35, strike: 0.8, to: 1.2 },          // the tackle at the waist
+  throw: { clip: 'm_grabthrow', keys: [[0, 3.0], [13, 3.45], [30, 4.2]],
+    byKind: { b: { clip: 'm_suplex', keys: [[0, 1.0], [13, 2.35], [30, 3.4]] } } }, // back: the German suplex (text to motion)
+  sp_u: { clip: 'a_hdash', keys: [[0, 0.0], [4, 0.25], [15, 0.6], [26, 1.1]] }, // the hollow dash (text to motion, stood up)
+};
+EMOTES.kerrian = { select: { emote: 'cheer' }, win: { emote: 'm_victory' } };
 RUN_OF.kerrian = 'heavy';

@@ -451,6 +451,7 @@ export class Poser {
       const ov = this.cfg.moves || {};
       // the character's own signature clip (Uthana) first, then the shared Tripo strikes
       let CM = (NATIVE_MOVES[F.char] || {})[F.move] || NATIVE_POSES[M.pose];
+      if (CM && CM.byKind && F.mv && CM.byKind[F.mv.kind]) CM = CM.byKind[F.mv.kind]; // a throw's clip by its direction (Kerrian: the suplex back)
       let sec = true;
       if (!CM || !X.has(CM.clip)) {
         CM = !ov[F.move] && !ov[M.pose] && CLIP_MOVES[M.pose];

@@ -15,8 +15,10 @@ ENTITIES.strike = {
   step(e, W) { if (e.t === e.warn) W.emit('strike', { k: e.look, x: e.x, y: e.y, z: e.z, r: e.r }); },
   hits(e) {
     if (e.t < e.warn || e.t > e.warn + 4) return null;
-    return { owner: -1, key: 'e' + e.id, shape: 'capsule', x: e.x, y: e.y - 0.5, z: e.z, x2: e.x, y2: e.y + 4, z2: e.z, r: e.r,
-      dmg: e.dmg, ang: e.ang, kbb: e.kbb, kbg: e.kbg, dir: 'radial', ent: e.id, src: 'proj', sfx: e.sfx || 'zap', blood: 1.8, unblockable: true, move: 'hazard:' + e.look, fx: e.look };
+    // a fighter's strike (Kerrian's giant fork: owner >= 0) is his attack: it can be shielded, it counts as his move
+    const own = e.owner >= 0;
+    return { owner: e.owner, key: 'e' + e.id, shape: 'capsule', x: e.x, y: e.y - 0.5, z: e.z, x2: e.x, y2: e.y + 4, z2: e.z, r: e.r,
+      dmg: e.dmg, ang: e.ang, kbb: e.kbb, kbg: e.kbg, dir: 'radial', ent: e.id, src: 'proj', sfx: e.sfx || 'zap', blood: 1.8, unblockable: !own, move: own ? e.srcMove || 'sp_d' : 'hazard:' + e.look, fx: e.look, spike: e.spike };
   },
 };
 

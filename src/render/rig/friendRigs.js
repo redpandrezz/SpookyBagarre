@@ -361,17 +361,47 @@ export const FRIEND_RIGS = {
   },
 };
 
-// Kerrian (Meshy rig) plays BIDO's moveset for now: BIDO's stance and props, in his own hands
+// Kerrian (Meshy rig): BIDO's stance; in his right hand the insulin syringe (neutral special) and the cup of hot
+// coffee (side special); the giant fork is an entity (the strike of the stages)
+const syringe = () => {
+  const g = grp(
+    mesh(G.cyl(0.035, 0.035, 0.2, 10), mat('#e8f4ff', { transparent: true, opacity: 0.75 }), [0, 0, 0]),   // the barrel
+    mesh(G.cyl(0.026, 0.026, 0.17, 8), mat('#ffb000'), [0, -0.01, 0]),                                     // the insulin
+    mesh(G.cyl(0.012, 0.012, 0.08, 6), mat('#d8dde4'), [0, 0.14, 0]), mesh(G.cyl(0.05, 0.05, 0.012, 10), mat('#d8dde4'), [0, 0.18, 0]), // the plunger
+    mesh(G.cyl(0.004, 0.004, 0.09, 4), mat('#c0c6cf'), [0, -0.145, 0]));                                  // the needle
+  g.rotation.x = Math.PI / 2;
+  return grp(g);
+};
+const coffeeCup = () => grp(
+  mesh(G.cyl(0.075, 0.056, 0.17, 12), mat('#f4efe6'), [0, 0, 0]),
+  mesh(G.cyl(0.077, 0.068, 0.06, 12), mat('#c08a52'), [0, -0.01, 0]),   // the cardboard sleeve
+  mesh(G.cyl(0.08, 0.078, 0.02, 12), mat('#f8f6f2'), [0, 0.094, 0]));  // the lid
+// the bazooka of his ultimate (BOOGIE ROCKET), in his right hand: a tube along +z, turned toward his facing
+const bazooka = () => grp(
+  mesh(G.cyl(0.11, 0.11, 1.15, 12), mat('#4a5a3a'), [0, 0.12, 0.35], [Math.PI / 2, 0, 0]),   // held from below, mostly in front
+  mesh(G.cyl(0.14, 0.11, 0.18, 12), mat('#2e3626'), [0, 0.12, 0.97], [Math.PI / 2, 0, 0]),
+  mesh(G.cyl(0.13, 0.13, 0.12, 12), mat('#ff5ad1', { emissive: '#5a1048' }), [0, 0.12, -0.2], [Math.PI / 2, 0, 0]),
+  mesh(G.box(0.06, 0.2, 0.08), mat('#2e3626'), [0, -0.02, 0.1]));
+const _bq = new THREE.Quaternion(), _by = new THREE.Quaternion(), _up = new THREE.Vector3(0, 1, 0);
 FRIEND_RIGS.kerrian = {
   ...FRIEND_RIGS.bido,
   h: 1.85,
   sockets: {
-    dumbbell: inHand('kerrian', FRIEND_PROPS.dumbbell),
-    kettlebell: inHand('kerrian', FRIEND_PROPS.kettlebell),
-    plateR: inHand('kerrian', () => { const p = FRIEND_PROPS.plates(); p.rotation.z = Math.PI / 2; return grp(p); }),
-    plateL: inHand('kerrian', () => { const p = FRIEND_PROPS.plates(); p.rotation.z = Math.PI / 2; return grp(p); }, 'L'),
-    barbell: onBone('chest', [0, 2.15, 0.05], () => { const b = FRIEND_PROPS.barbell(); b.rotation.y = Math.PI / 2; return grp(b); }),
-    balloon: onBone('chest', [0, 1.75, -0.05], () => { const b = FRIEND_BODY.balloon(); b.rotation.y = Math.PI / 2; return grp(b); }),
-    rope: { bone: 'hand.R', at: HAND.kerrian, build: ropeObj },
+    syringe: inHand('kerrian', syringe),
+    cup: inHand('kerrian', coffeeCup),
+    bazooka: inHand('kerrian', bazooka),
+  },
+  reach: { far: 0.85, moves: { jab1: 'hand.R', jab2: 'hand.L', jab3: false, ftilt: 'hand.R', utilt: false, dtilt: false, smash: true, usmash: 'hand.R', dsmash: false,
+    nair: true, fair: true, bair: true, uair: true, dair: true, dashattack: 'hand.R', ledgeattack: true, sp_n: false, sp_s: false, sp_u: false, sp_d: false } },
+  update(V, F) {
+    show(V, F, { syringe: 0, cup: 2, bazooka: (G_) => !!(G_.move && G_.move.startsWith('ult_')) });
+    const bz = V.sockets.bazooka && V.sockets.bazooka.obj;
+    if (bz && bz.visible && bz.parent) {
+      // whatever the hand does, the tube points where he faces (world: +x right, -x left)
+      bz.parent.updateWorldMatrix(true, false);
+      bz.parent.getWorldQuaternion(_bq).invert();
+      _by.setFromAxisAngle(_up, Math.sin(F.facing) < 0 ? -Math.PI / 2 : Math.PI / 2);
+      bz.quaternion.copy(_bq).multiply(_by);
+    }
   },
 };

@@ -16,6 +16,7 @@ export function passFx(fx, ev, W) {
         case 'love': for (let i = 0; i < 5; i++) P.burst('heart', x, y, z, 1, i % 2 ? '#ff3a6a' : '#ff8ab4', { speed: 4, g: -2, life: 0.8, s: 0.8 }); break;
         case 'poison': P.burst('drop', x, y, z, 10, '#7cff3a', { speed: 4, g: 4, life: 0.6 }); break;
         case 'water': P.burst('drop', x, y, z, 14, '#8ad8ff', { speed: 5, g: 12, life: 0.6 }); break;
+        case 'coffee': P.burst('drop', x, y, z, 10, '#7a4422', { speed: 4, g: 12, life: 0.5 }); P.burst('spark', x, y + 0.2, z, 2, '#efe8e0', { speed: 0.8, vy: 2, g: -2, life: 0.5, s: 1.1 }); break; // Kerrian's hot coffee
         case 'money': P.burst('flake', x, y, z, 10, '#ffd23a', { speed: 6, g: 12, life: 0.7 }); break;
         case 'fire': P.burst('spark', x, y, z, 5, '#ff7a1a', { speed: 4, g: -4, life: 0.3, s: 0.7 }); break;
         case 'dunk': say('DUNK !', x, y + 1, '#ff9a2a', 1.2); break;
@@ -86,6 +87,11 @@ export function passFx(fx, ev, W) {
       return true;
     case 'burnFx':
       if (!ev.p) return false; // the fire: friendsView.js
+      if (ev.p === 2) { // hot coffee (Kerrian): brown drops and a little steam
+        P.burst('drop', ev.x + (Math.random() - 0.5) * 0.5, ev.y, 0.4, 2, Math.random() < 0.5 ? '#6b3a1e' : '#a0643a', { speed: 1.2, vy: 1.5, g: 6, life: 0.5 });
+        P.burst('spark', ev.x + (Math.random() - 0.5) * 0.4, ev.y + 0.3, 0.4, 1, '#e8e2da', { speed: 0.6, vy: 2.5, g: -3, life: 0.6, s: 0.9 });
+        return true;
+      }
       P.burst('drop', ev.x + (Math.random() - 0.5) * 0.5, ev.y, 0.4, 2, Math.random() < 0.5 ? '#7cff3a' : '#3aa81a', { speed: 1.2, vy: 2.5, g: -2, life: 0.5 });
       return true;
     // --- OMFU ---
@@ -316,6 +322,44 @@ export function passFx(fx, ev, W) {
       say('BOOM !', ev.x, ev.y + 1, '#ffd23a', 1.3);
       fx.rig.shake(0.6);
       if (A) A.sfx('sub808', pan(ev.x), 1);
+      return true;
+    // --- Kerrian ---
+    case 'heal': // the insulin: his % goes down
+      say('−' + ev.n + ' %', ev.x, ev.y, '#5aff9a', 1.1);
+      P.burst('spark', ev.x, ev.y - 0.6, 0, 12, '#9affc8', { speed: 3, vy: 3, g: -2, life: 0.6, s: 0.8 });
+      P.shockRing(ev.x, ev.y - 0.9, 0, '#5aff9a', 0.6, 0.25, true);
+      if (A) A.sfx('perfect', pan(ev.x), 0.5, 0, 1.4);
+      return true;
+    case 'insulin':
+      say('INSULINE', ev.x, ev.y + 0.9, '#ffb000', 0.8);
+      if (A) A.sfx('hitS', pan(ev.x), 0.4, 0, 1.8);
+      return true;
+    case 'diabetes': // the handicap: 15 % every 30 s
+      say('DIABÈTE ! +' + ev.n + ' %', ev.x, ev.y, '#ff4a6a', 1.15);
+      P.burst('flake', ev.x, ev.y - 0.4, 0, 12, '#ffffff', { speed: 3, vy: 2, g: 6, life: 0.8 }); // sugar
+      fx.rig.shake(0.15);
+      if (A) A.sfx('hitM', pan(ev.x), 0.6, 0, 0.7);
+      return true;
+    case 'selfHurt':
+      say('+' + ev.n + ' %', ev.x, ev.y, '#ff8a8a', 0.7);
+      return true;
+    case 'hollowDash': { // a nervous dash up: a black streak and a burst of dark smoke at his feet
+      for (let i = 0; i < 10; i++) P.burst('spark', ev.x + (Math.random() - 0.5) * 0.5, ev.y + 0.2 + i * 0.25, 0.2, 1, i % 2 ? '#1a1a22' : '#e8ecff', { speed: 0.6, vy: -4, g: 0, life: 0.3, s: 1.4 });
+      P.shockRing(ev.x, ev.y + 0.2, 0, '#e8ecff', 0.5, 0.18, true);
+      if (A) A.sfx('whoosh', pan(ev.x), 0.8, 0, ev.n ? 1.25 : 1.05);
+      return true;
+    }
+    case 'coffee': { // the jet of hot coffee: brown drops thrown forward, a little steam
+      for (let i = 0; i < 8; i++) {
+        const vx = Math.sin(ev.a) * (7 + Math.random() * 6), vy = (Math.random() - 0.1) * 3;
+        P.burst('drop', ev.x + Math.sin(ev.a) * 0.7, ev.y, 0.3, 1, i % 2 ? '#a0643a' : '#c8884a', { speed: 0.6, vx, vy, g: 9, life: 0.4, s: 1.8 });
+      }
+      for (let i = 0; i < 2; i++) P.burst('spark', ev.x + Math.sin(ev.a) * (0.9 + i * 0.8), ev.y + 0.2, 0.3, 1, '#f4efe8', { speed: 0.8, vy: 2, g: -2, life: 0.55, s: 1.6 });
+      return true;
+    }
+    case 'scalded':
+      say('BRÛLANT !', ev.x, ev.y + 0.9, '#c87a3a', 0.9);
+      if (A) A.sfx('sizzle', pan(ev.x), 0.7);
       return true;
     default: return false;
   }

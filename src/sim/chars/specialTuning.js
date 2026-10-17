@@ -23,8 +23,7 @@ export const SPECIAL_TUNING = {
   lolobiscotto: { sp_n: { cd: 70, poke: true }, sp_s: { cd: 220 }, sp_d: { cd: 260 } },      // chili (it still burns), grey cat (clings, slows), Ricard slick (falls)
   jsan: { sp_n: { cd: 210 }, sp_s: { cd: 200 }, sp_d: { cd: 150 } },                         // vape cloud (stuns), fetch (drags back), the poop (four at most)
   nymano: { sp_n: { cd: 150 }, sp_s: { cd: 120 }, sp_d: { cd: 160 } },                       // sample wave, skate dash, tears
-  bido: { sp_n: { cd: 300 }, sp_s: { cd: 100 }, sp_d: { cd: 240 } },
-  kerrian: { sp_n: { cd: 300 }, sp_s: { cd: 100 }, sp_d: { cd: 240 } }, // BIDO's moveset for now                         // the kiss (he steers the foe), jump rope, the flex (stuns)
+  bido: { sp_n: { cd: 300 }, sp_s: { cd: 100 }, sp_d: { cd: 240 } },                         // the kiss (he steers the foe), jump rope, the flex (stuns)
   epektase: { sp_n: { cd: 190 }, sp_s: { cd: 150 }, sp_d: { cd: 230 } },                     // the solo (a stream of notes), power chord, larsen (stuns)
   pprod: { sp_n: { cd: 220 }, sp_s: { cd: 170 }, sp_d: { cd: 150 } },                        // the bugs out of the PC, the exploding PC, the pizza (5: it bursts)
   anbuu: { sp_n: { cd: 170 }, sp_s: { cd: 150 }, sp_d: { cd: 220 } },                       // the lick (7 notes), the waveform, the holy 808
@@ -70,7 +69,7 @@ const ONE_OUT = { micron: ['sp_n'], tung: ['sp_s', 'sp_d'], bubba: ['sp_n', 'sp_
 const RECOVERY = {
   frog: [1.25, 1.1, 1.2], micron: [1.5, 1.15, 1.5], bubba: [1.5, 1.12, 1.3], parmesan: [1.6, 1.12, 1.3], pika: [1.25, 1.1, 1.2],
   tung: [1.35, 1.1, 1.25], shark: [1.35, 1.1, 1.25], catlady: [1.1, 1.08, 1.1], pandrezz: [1.6, 1.2, 1.5], aboueb: [1.4, 1.12, 1.3],
-  tices: [3.0, 1.3, 1.3], lolobiscotto: [1.75, 1.15, 1.3], jsan: [1.35, 1.12, 1.25], nymano: [1.25, 1.1, 1.2], bido: [1.7, 1.12, 1.2], kerrian: [1.7, 1.12, 1.2],
+  tices: [3.0, 1.3, 1.3], lolobiscotto: [1.75, 1.15, 1.3], jsan: [1.35, 1.12, 1.25], nymano: [1.25, 1.1, 1.2], bido: [1.7, 1.12, 1.2],
   epektase: [1.1, 1.15, 1.1], pprod: [1.25, 1.12, 1.25], anbuu: [1.2, 1.1, 1.2],
   skanky: [1.25, 1.1, 1, { f: [4, 4], at: [0, 0.9, 0.5], r: 0.6, dmg: 18, ang: 80, kbb: 30, kbg: 92, sfx: 'hitL', blood: 1.5, dir: 'radial', hitlag: 1.3 }],
 };

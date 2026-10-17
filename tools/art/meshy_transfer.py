@@ -195,7 +195,9 @@ class Transfer:
         """a vector in the source's space -> the target's space (both turned to face +Z)"""
         return qrot(qinv(self.Nt), qrot(self.Ns, v))
 
-    def bake(self, tracks, tmax):
+    def bake(self, tracks, tmax, center=True):
+        """center: the hips' travel across the floor centred on its mean (a raw clip); False: kept where the source
+        has it from its rest pose (a clip of a packed game model, already in place)"""
         src, tgt, tw0, srest = self.src, self.tgt, self.trest, self.srest
         n = max(2, int(round(tmax * FPS)) + 1)
         times = np.array([i / FPS for i in range(n)])
@@ -238,7 +240,11 @@ class Transfer:
             h = qrot(self.Ns, P('Hip')); h[1] -= ankles(srest)
             hips.append(h * self.k)
         hips = np.array(hips)
-        hips[:, 0] -= hips[:, 0].mean(); hips[:, 2] -= hips[:, 2].mean()
+        if center:
+            hips[:, 0] -= hips[:, 0].mean(); hips[:, 2] -= hips[:, 2].mean()
+        else:
+            r0 = qrot(self.Ns, srest['Hip'][0]) * self.k
+            hips[:, 0] -= r0[0]; hips[:, 2] -= r0[2]
         hip_i = tgt.idx['Hip']
         pW = tgt.name_world()[tgt.nodes[tgt.parent[hip_i]]['name']]
         out = []
