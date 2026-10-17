@@ -12,7 +12,7 @@ export const SFX_FILES = [
   // blows
   'hitS', 'hitM', 'hitL', 'punchHeavy', 'slap', 'whoosh', 'pummel',
   // defence, grabs, KO
-  'shield', 'shieldHit', 'parry', 'grab', 'tech', 'ko', 'glass',
+  'shield', 'shieldHit', 'parry', 'grab', 'tech', 'ko', 'glass', 'elimination', 'finishHit',
   // movement
   'jump', 'jump2', 'land', 'thud', 'slip', 'ledge', 'respawn',
   // menus, countdown, match
@@ -22,7 +22,7 @@ export const SFX_FILES = [
   // ANBUU: the seven notes of the lick, the holy 808, the wings
   'lick0', 'lick1', 'lick2', 'lick3', 'lick4', 'lick5', 'lick6', 'sub808', 'flap',
   // PIKA, ANBUU: the electric zap
-  'zap',
+  'zap', 'zapS',
   // sounds of the fighters' moves / events that now have a file
   'whip', 'couscous', 'bounceBall', 'carpet', 'guitarHit', 'larsen', 'note', 'powerchord', 'shred', 'stamp', 'thunder',
   // EPEKTASE: the riff when a big move is released, the smash of the guitar on impact
@@ -38,7 +38,7 @@ export const SFX_FILES = [
 ];
 
 // the sounds heard again and again, which can have several versions (hitS1, hitS2, hitS3...) instead of one file
-export const SFX_VARIANTS = ['hitS', 'hitM', 'hitL', 'punchHeavy', 'slap', 'whoosh', 'jump', 'land', 'pummel', 'micron_hurt'];
+export const SFX_VARIANTS = ['hitS', 'hitM', 'hitL', 'punchHeavy', 'slap', 'whoosh', 'jump', 'land', 'pummel', 'micron_hurt', 'zapS'];
 const MAX_VARIANTS = 6;
 
 // the formats this browser plays, best first: Safari often cannot play .ogg (Vorbis), then only mp3 and wav count

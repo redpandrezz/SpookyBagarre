@@ -593,7 +593,7 @@ export class Screens {
     const cards = h('div', 'cs-cards');
     el.appendChild(cards);
     // the keys of a pad and of the keyboard (ZQSD side), and the mouse
-    const help = h('div', 'cs-help2 txt', TD ? '<b class="ka">A</b> prendre sa place / choisir · <b class="kb">B</b> annuler · <b>START</b> au combat' : '<b class="ka">A</b> / Entrée choisir · <b class="kb">B</b> / ⌫ annuler · <b class="ky">Y</b> / I + CPU · <b class="kx">X</b> / L − CPU · <b>START</b> / Entrée c\'est parti · clic sur une case vide : + CPU');
+    const help = h('div', 'cs-help2 txt', TD ? '<b class="ka">A</b> prendre sa place / choisir · <b class="kb">B</b> annuler · <b>START</b> au combat' : '<b class="ka">A</b> / Entrée choisir · <b class="kb">B</b> / ⌫ annuler · <b class="ky">Y</b> / I + CPU (le perso sous ton curseur) · <b class="kx">X</b> / L − CPU · <b>START</b> / Entrée c\'est parti · clic sur une case vide : + CPU');
     el.appendChild(help);
     this.layer.innerHTML = '';
     this.layer.appendChild(el);
@@ -732,7 +732,7 @@ export class Screens {
           if ((m.start || m.confirm) && S.allReady()) { app.audio.sfx('menuOk'); S.request({ k: 'toStage' }); return; }
         }
         if (S.mode !== 'client' && !TD) {
-          if (m.y) { S.request({ k: 'cpu+' }); app.audio.sfx('menuOk'); }
+          if (m.y) { const tile = !s.ready ? CS_TILES[lc[d.id] ?? s.cursor] : null; S.request({ k: 'cpu+', char: tile && tile !== 'random' ? tile : undefined }); app.audio.sfx('menuOk'); } // (Y : le CPU prend le perso sous ton curseur)
           if (m.x) { S.request({ k: 'cpu-' }); app.audio.sfx('menuBack'); }
         }
       }
@@ -1270,7 +1270,7 @@ export class Screens {
             <tr><td><b class="btnB">B</b> / <b class="btnY">Y</b></td><td>Sauter (double saut en l'air) · stick bas en retombant = chute rapide</td></tr>
             <tr><td>Gâchettes</td><td>Bouclier · bouclier + côté = <b>roulade invincible</b> (une vraie roulade, assez longue pour passer derrière) · bouclier + bas = esquive sur place · en l'air = esquive dans la direction du stick · juste avant un coup = <b>PARADE</b></td></tr>
             <tr><td>Bouclier + <b class="btnA">A</b> ou <b>LB/RB</b></td><td>Saisir, puis stick = lancer (avant, arrière, haut, bas), A = frapper</td></tr>
-            <tr><td>⚡ <b>Ultime</b></td><td>Donner et surtout <b>encaisser</b> des coups remplit la <b>jauge d'ultime</b> sous ton portrait (elle se vide au KO). Quand elle est pleine, « ULTIME PRÊT ! » : appuie sur <b class="btnA">A</b> + <b class="btnX">X</b> <b>en même temps</b> (clavier : clic gauche + clic droit). <b>Il faut viser</b> : le rayon part tout droit devant toi, à hauteur de poitrine, jusqu'à 11 m. Ceux qui sont dans la bande sont attrapés et subissent toute la cinématique, les autres ne risquent rien ; si personne n'y est, tu as gâché ta jauge. <b>Si tu es dans la zone, tu peux parer</b> : pendant l'entrée en scène un <b>anneau</b> se resserre autour de toi, et quand il devient <b>doré</b> (les 9 dernières images), lève ton <b>bouclier</b> d'<b>un seul appui net</b> (marteler la touche ne marche pas). Le verdict tombe avant le tir : <b>PARADE !</b> et l'ultime est <b>renvoyé</b> sur celui qui l'a lancé, ou <b>RATÉ…</b> et tu le prends.</td></tr>
+            <tr><td>⚡ <b>Ultime</b></td><td>Donner et surtout <b>encaisser</b> des coups remplit la <b>jauge d'ultime</b> sous ton portrait (elle se vide au KO). Quand elle est pleine, « ULTIME PRÊT ! » : appuie sur <b class="btnA">A</b> + <b class="btnX">X</b> <b>en même temps</b> (clavier : clic gauche + clic droit). <b>Il faut viser</b> : le rayon part tout droit devant toi, à hauteur de poitrine, jusqu'à 11 m. Ceux qui sont dans la bande sont attrapés et subissent toute la cinématique, les autres ne risquent rien ; si personne n'y est, tu as gâché ta jauge. <b>Si tu es dans la zone, tu peux parer</b> : pendant l'entrée en scène un <b>anneau</b> se resserre autour de toi, et quand il devient <b>doré</b> (les 9 dernières images), lève ton <b>bouclier</b> d'<b>un seul appui net</b> (marteler la touche ne marche pas). Le verdict tombe avant le tir : <b>PARÉ !</b> et l'ultime est <b>annulé</b> (celui qui l'a lancé perd sa jauge et reste étourdi, à toi de le punir), <b>PARFAIT !</b> (les 3 toutes dernières images, quand l'anneau passe au blanc) et l'ultime lui est <b>renvoyé</b>, ou <b>RATÉ…</b> et tu le prends.</td></tr>
             <tr><td>Start</td><td>Pause</td></tr>
             <tr><td>🎲 <b>Mini-jeux</b></td><td>Toutes les <b>60 à 80 secondes</b>, au hasard (un compte à rebours ne s'affiche que 5 secondes avant), le combat se fige : deux combattants tirés au hasard s'affrontent 10 secondes dans un <b>mini-jeu au hasard</b> (duel au pistolet, concours de baffes, tiercé de la pinte, danse kawaii, bullet hell... il y en a 14), après une présentation de 3 secondes (le but en une phrase, tes touches). Tous se jouent au clavier seul. Le gagnant fait payer le perdant (un gros paquet de %), puis le combat reprend après 2 secondes figées : le perdant prend un coup qui l'éjecte. Pour les essayer un par un : <b>MINI-JEUX</b> au menu principal.</td></tr>
           </table>
