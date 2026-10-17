@@ -70,7 +70,7 @@ const MOVE_LINES = [
 // when a character KOs someone (35 % of the time instead of the generic line)
 const KO_BY = {
   epektase: ['Il lui a joué son dernier morceau !', 'Rideau ! Fin du concert !', 'Le public en délire !'],
-  ronare: ['Le gardien a fermé la porte !', 'Il lui a emprunté ses coups... et sa victoire !', 'Kamehameha de contrefaçon, vrai KO !'],
+  ronare: ['Le gardien a fermé la porte !', 'Coup de basse, coup de grâce !', 'Une pinte dans la tronche !', 'Il l\'a branché sur le jack !'],
   anbuu: ['Un ange est passé !', 'Il l\'a envoyé au paradis du jazz !', 'Pieds nus et sans pitié !'],
   skanky: ['Il l\'a saoulé, il est parti !', 'Sans ticket et sans pitié !', 'Fraude et victoire !'],
   pprod: ['Fichier supprimé !', 'Il l\'a mis à la corbeille !', 'Contrôle Alt Suppr !'],

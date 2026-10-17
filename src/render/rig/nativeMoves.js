@@ -228,6 +228,18 @@ export const NATIVE_MOVES = {
     sp_u: { clip: 'a_ollie', keys: [[0, 0.35], [5, 0.9], [26, 1.45], [56, 2.6], [90, 2.9]] },
     sp_d: { clip: 'm_funk', from: 0.4, to: 5.6, cycle: [17, 18], rate: 1 },             // the funk de Lyon (held: on and on)
   },
+  // RONARE (Meshy rig): clips of the others moved onto his skeleton (tools/art/meshy_transfer.py, then meshy_pack.py):
+  // Pandrezz's whole set (the jabs are the shared boxing clips of poser.js), Epektase's guitar swings for the bass,
+  // OMFU's scratch, Aboueb's carpet, Tices's frisbee. The down smash's headstand is a pose (RONARE_RIG, body turned over)
+  ronare: {
+    dashattack: { clip: 'u_pandrezz_dash', from: 0.55, strike: 1.05, to: 1.3 },                       // the flying side kick
+    smash: { clip: 'm_chargedslash', from: 0.2, strike: 1.17, to: 2.0 },                               // the bass swung forward
+    usmash: { clip: 'm_upslash', keys: [[0, 0.6], [7, 0.75], [10, 0.9], [16, 1.15], [48, 1.7]] },     // the bass up in an arc
+    sp_n: { clip: 'u_tices_frisbee', keys: [[0, 0.2], [11, 0.7], [15, 0.4], [19, 0.72], [40, 1.1]] }, // two records flung
+    sp_s: { clip: 'u_tices_frisbee', keys: [[0, 0.2], [5, 0.7], [40, 0.75], [58, 1.1]] },             // the jack thrown, held out
+    sp_d: { clip: 'u_omfu_scratch', keys: [[0, 0.1], [12, 0.8], [36, 1.6], [48, 2.3]] },              // scratching on the turntable
+    sp_u: { clip: 'm_carpet', keys: [[0, 0.2], [72, 2.8]] },                                         // cross-legged on the record
+  },
   // the eight first characters (their Blender skeletons get the clips through tools/art/legacy_pack.py); the others
   // keep a hand-made dash attack pose (it reads better than their generated take)
   micron: { dashattack: { clip: 'u_micron_dash', from: 0.3, strike: 0.75, to: 1.25 } },
@@ -236,9 +248,6 @@ export const NATIVE_MOVES = {
 };
 
 // moves shared by every packed character (the kit's combo enders), by pose
-// RONARE (Meshy rig): every clip of Pandrezz moved onto his skeleton (tools/art/meshy_pack.py), his moves for now
-NATIVE_MOVES.ronare = NATIVE_MOVES.pandrezz;
-
 export const NATIVE_POSES = {
   headbutt: { clip: 'u_headbutt', from: 0.2, strike: 0.6, to: 1.2, mirror: true },
 };

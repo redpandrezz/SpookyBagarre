@@ -235,6 +235,17 @@ export class FX {
         if (F) { this.particles.smoke.kick(F.x - ev.d * 0.3, F.y, F.z, -ev.d, ev.turn ? 7 : 5, ev.turn ? 7 : 6, ev.turn ? 0.27 : 0.24); A && A.sfx('whoosh', this.pan(F.x), ev.turn ? 0.25 : 0.35); }
         break;
       }
+      // RONARE (src/sim/chars/ronare.js): the pint broken on the floor, the needle dropped, the jack's jolt
+      case 'pintSmash': {
+        P.burst('drop', ev.x, ev.y + 0.25, ev.z, 26, '#f0a020', { speed: 7 });
+        P.burst('drop', ev.x, ev.y + 0.25, ev.z, 12, '#fff8e6', { speed: 5 });
+        P.sparks(ev.x, ev.y + 0.2, ev.z, 8, '#e8f6ff', 8, 0.25);
+        if (A) A.sfx('glass', this.pan(ev.x), 0.9);
+        this.rig.shake(0.35);
+        break;
+      }
+      case 'turntable': P.sparks(ev.x, ev.y + 0.2, ev.z, 10, '#ff5ab8', 7, 0.3); break;
+      case 'jackStun': P.sparks(ev.x, ev.y, ev.z, 8, '#ffe28a', 6, 0.25); this.popups.text('BZZT !', ev.x, ev.y + 1, ev.z, '#ffe28a', 1.1); break;
       case 'cdDeny': {
         // pressed while it recharges: a dry click, a wisp from the hands, the arc under the feet blinks red
         const F = W.fighters[ev.s], V = this.view(ev.s);

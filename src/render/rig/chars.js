@@ -11,6 +11,7 @@ import { EPEKTASE_RIG } from './epektaseRig.js';
 import { PPROD_RIG } from './pprodRig.js';
 import { SKANKY_RIG } from './skankyRig.js';
 import { ANBUU_RIG } from './anbuuRig.js';
+import { RONARE_RIG } from './ronareRig.js';
 
 const grp = (...c) => { const g = new THREE.Group(); c.forEach((o) => o && g.add(o)); return g; };
 
@@ -189,6 +190,4 @@ export const RIGS = {
     },
   },
 };
-Object.assign(RIGS, FRIEND_RIGS, EPEKTASE_RIG, PPROD_RIG, SKANKY_RIG, ANBUU_RIG);
-// RONARE: Pandrezz's moveset (his kamehameha ball, his poses where a clip is missing), on his own Meshy model
-RIGS.ronare = { ...RIGS.pandrezz, h: 1.85 };
+Object.assign(RIGS, FRIEND_RIGS, EPEKTASE_RIG, PPROD_RIG, SKANKY_RIG, ANBUU_RIG, RONARE_RIG);
