@@ -46,7 +46,8 @@ export class RigModel {
         const src = o.material;
         let m;
         if (STYLE.smooth) {
-          m = new THREE.MeshStandardMaterial({ map: src.map || null, color: 0xffffff, roughness: 0.72, metalness: 0.0 });
+          // normalMap: a model decimated from a high-poly Meshy export carries the detail baked from it (meshy_decimate.py)
+          m = new THREE.MeshStandardMaterial({ map: src.map || null, normalMap: src.normalMap || null, color: 0xffffff, roughness: 0.72, metalness: 0.0 });
           if (m.map) { m.map.anisotropy = 4; }
         } else {
           m = new THREE.MeshLambertMaterial({ map: src.map || null, color: 0xffffff });

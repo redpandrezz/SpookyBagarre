@@ -17,6 +17,7 @@ const hidden = (o) => { o.visible = false; return o; };
 const HAND = {
   aboueb: [-0.505, 0.755, 0.055], tices: [-0.49, 0.83, 0.055], omfu: [-0.5, 0.76, 0.055], lolobiscotto: [-0.475, 0.775, 0.055],
   jsan: [-0.51, 0.8, 0.055], nymano: [-0.5, 0.725, 0.055], bido: [-0.55, 0.805, 0.055],
+  kerrian: [-0.64, 1.35, -0.02], // Meshy rig, in T-pose at rest
 };
 const left = (p) => [-p[0], p[1], p[2]];
 const inHand = (id, build, side = 'R') => ({ bone: 'hand.' + side, at: side === 'R' ? HAND[id] : left(HAND[id]), build: () => hidden(build()) });
@@ -357,5 +358,20 @@ export const FRIEND_RIGS = {
       const rp = V.sockets.rope && V.sockets.rope.obj;
       if (rp) { rp.visible = F.state === 'move' && (F.va[6] || 0) > 0; if (rp.visible) layRope(V, rp, F, F.va[5] || 0.35, t); }
     },
+  },
+};
+
+// Kerrian (Meshy rig) plays BIDO's moveset for now: BIDO's stance and props, in his own hands
+FRIEND_RIGS.kerrian = {
+  ...FRIEND_RIGS.bido,
+  h: 1.85,
+  sockets: {
+    dumbbell: inHand('kerrian', FRIEND_PROPS.dumbbell),
+    kettlebell: inHand('kerrian', FRIEND_PROPS.kettlebell),
+    plateR: inHand('kerrian', () => { const p = FRIEND_PROPS.plates(); p.rotation.z = Math.PI / 2; return grp(p); }),
+    plateL: inHand('kerrian', () => { const p = FRIEND_PROPS.plates(); p.rotation.z = Math.PI / 2; return grp(p); }, 'L'),
+    barbell: onBone('chest', [0, 2.15, 0.05], () => { const b = FRIEND_PROPS.barbell(); b.rotation.y = Math.PI / 2; return grp(b); }),
+    balloon: onBone('chest', [0, 1.75, -0.05], () => { const b = FRIEND_BODY.balloon(); b.rotation.y = Math.PI / 2; return grp(b); }),
+    rope: { bone: 'hand.R', at: HAND.kerrian, build: ropeObj },
   },
 };

@@ -70,7 +70,7 @@ export function dodgeData(arch) {
 // our fighters -> their archetype (the creator's picks; the eight first ones chosen by their style)
 export const ARCHETYPE = {
   pandrezz: 'falcon', aboueb: 'samus', tices: 'ness', omfu: 'ganondorf', lolobiscotto: 'peach', jsan: 'iceclimbers',
-  nymano: 'pikachu', bido: 'dk', epektase: 'marth', pprod: 'gameandwatch', skanky: 'luigi', anbuu: 'mewtwo',
+  nymano: 'pikachu', bido: 'dk', epektase: 'marth', pprod: 'gameandwatch', skanky: 'luigi', anbuu: 'mewtwo', kerrian: 'dk',
   frog: 'greninja', micron: 'mario', bubba: 'krool', parmesan: 'wario', pika: 'squirtle', tung: 'link', shark: 'wolf', catlady: 'villager',
 };
 

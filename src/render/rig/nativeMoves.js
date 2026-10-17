@@ -358,3 +358,8 @@ export function keysAt(keys, f) {
   }
   return keys[keys.length - 1][1];
 }
+
+// Kerrian plays BIDO's moveset with BIDO's clips (copied onto his rig by tools/art/model_clips.py)
+NATIVE_MOVES.kerrian = NATIVE_MOVES.bido;
+EMOTES.kerrian = EMOTES.bido;
+RUN_OF.kerrian = 'heavy';

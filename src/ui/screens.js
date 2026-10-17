@@ -27,8 +27,9 @@ import { Logo3D } from './logo3d.js';
 import { Versus } from './versus.js';
 
 const h = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
-const GRID_COLS = 7; // 18 fighters and the random tile on 3 rows
 const CS_TILES = [...CHAR_ORDER, 'random'];
+// the fighters and the random tile on 3 rows; past 7 columns the grid is scaled down to the width of 7
+const GRID_COLS = Math.max(7, Math.ceil(CS_TILES.length / 3));
 const UI = 'assets/ui/crypt/';
 const WOB = 'assets/ui/wob/'; // World of Bagarre: the logo and the title art (tools/art/wob.ps1)
 const PAINTED_THUMBS = new Set(['cemetery', 'swamp', 'elysee', 'diner', 'cave', 'arena', 'village', 'sea', 'attic', 'mirror', 'zinzin']);
@@ -562,6 +563,7 @@ export class Screens {
       : `<div class="cs-title"><span>CHOISIS</span> <b>TON BAGARREUR</b></div>`) +
       (S.lobby.code ? `<div class="cs-room"><small>SALON</small><b>${S.lobby.code}</b><i>${S.mode === 'host' ? 'donne ce code à tes potes' : 'connecté'}</i></div>` : '');
     const grid = h('div', 'cs-grid2');
+    if (GRID_COLS > 7) { grid.style.transformOrigin = '0 0'; grid.style.transform = `scale(${7 / GRID_COLS})`; }
     CS_TILES.forEach((id, i) => {
       const t = h('div', 'cs-tile');
       t.style.left = (i % GRID_COLS) * 49 + 'px';

@@ -22,6 +22,7 @@ const T = {
   lolobiscotto: { name: 'PASTIS ET PIMENT',   sub: 'Ça brûle, ça glisse',         c: ['#ffd0e6', '#e8509a', '#ffb13a'], p: ['jupiter', 'sprinkle', 'thunder'], n: 8, every: 11, small: 1.8, dmg: 18, ang: 46, kbb: 60, kbg: 52 },
   jsan:         { name: 'NUAGE DU SHIBA',     sub: 'Vape, vape, vape',            c: ['#ffe9c8', '#d9a35f', '#9ff0ff'], p: ['jupiter', 'helico', 'thunder'], n: 7, every: 12, small: 2.2, dmg: 18, ang: 52, kbb: 60, kbg: 52 },
   nymano:       { name: 'SAMPLE DES LARMES',  sub: 'SP-404, volume max',          c: ['#c8e0ff', '#3d7fd9', '#ff9ad8'], p: ['drum', 'drum', 'thunder'], n: 8, every: 11, small: 1.9, dmg: 18, ang: 44, kbb: 60, kbg: 52 },
+  kerrian:      { name: 'PARABOOT FINAL',     sub: 'Blasé mais efficace',         c: ['#ffe2c4', '#ff8a2b', '#d8262c'], p: ['jupiter', 'grab', 'full'], n: 5, every: 16, small: 3.0, dmg: 20, ang: 46, kbb: 62, kbg: 54 },
   bido:         { name: 'BISOU FINAL',        sub: 'Des muscles et du cœur',      c: ['#ffd6ec', '#ff6fb1', '#ffe14a'], p: ['jupiter', 'grab', 'full'], n: 5, every: 16, small: 3.0, dmg: 20, ang: 46, kbb: 62, kbg: 54 },
   epektase:     { name: 'SOLO ULTIME',        sub: 'Larsen et carré Hermès',      c: ['#ffd0d0', '#d8262c', '#ffd23a'], p: ['jupiter', 'drum', 'thunder'], n: 9, every: 10, small: 1.7, dmg: 18, ang: 40, kbb: 62, kbg: 52 },
   pprod:        { name: 'COMPIL FINALE',      sub: 'Ctrl + Alt + Suppr',          c: ['#e8eef8', '#9aa4b4', '#5aff9a'], p: ['thunder', 'drum', 'decree'], n: 10, every: 9, small: 1.5, dmg: 17, ang: 44, kbb: 60, kbg: 52 },

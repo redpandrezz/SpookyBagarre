@@ -6,7 +6,8 @@ tools/meshy/ledger.jsonl (not published). A failed task is never retried automat
   python tools/meshy/meshy.py balance
   python tools/meshy/meshy.py library [--search kick] [--category Fighting]     (free: the animation library, json)
   python tools/meshy/meshy.py model <id> <image> [--polys 30000] [--tex 2k] [--pose none]   (image to 3D, about 30 credits; a prop: --pose none)
-  python tools/meshy/meshy.py rig <id> [--height 1.8]                             (5 credits)
+  python tools/meshy/meshy.py multi <id> <front.png,back.png> [--polys 30000]       (several views to 3D, already posed)
+  python tools/meshy/meshy.py rig <id> [--height 1.8] [--file model.glb]           (5 credits; --file: a local model)
   python tools/meshy/meshy.py anim <id> <name> <action_id> [<action_id> ...]      (3 credits per action)
   python tools/meshy/meshy.py motion <id> <name> <seconds> "<prompt>"             (text to motion 10 + animation)
 Files go to tools/art/meshy/<id>/ (state.json keeps the task ids).
@@ -129,6 +130,26 @@ def cmd_model(cid, image, args):
     state(cid, model_task=tid)
 
 
+def cmd_multi(cid, images, args):
+    """several views of the same character (front, back...: comma separated) -> one model, same settings as `model`;
+    the views are expected already in the wanted pose (no pose_mode)"""
+    polys = int(opt(args, '--polys', 30000))
+    b = guard(40, 'multi ' + cid)
+    body = {'image_urls': [data_uri(p) for p in images.split(',')], 'ai_model': opt(args, '--ai', 'meshy-6'),
+            'should_texture': True, 'enable_pbr': False, 'should_remesh': True, 'topology': 'triangle',
+            'target_polycount': polys, 'symmetry_mode': 'auto'}
+    tid = call('POST', '/multi-image-to-3d', body)['result']
+    log({'id': cid, 'kind': 'multi-image-to-3d', 'task': tid, 'balance_before': b, 'polys': polys, 'images': images})
+    t = wait('multi-image-to-3d', tid)
+    log({'id': cid, 'kind': 'multi-image-to-3d', 'task': tid, 'status': t['status'], 'consumed': t.get('consumed_credits')})
+    if t['status'] != 'SUCCEEDED':
+        sys.exit('failed: %s' % t.get('task_error'))
+    d = os.path.join(OUT, cid)
+    fetch(t['model_urls']['glb'], os.path.join(d, 'model.glb'))
+    if t.get('thumbnail_url'): fetch(t['thumbnail_url'], os.path.join(d, 'model.png'))
+    state(cid, model_task=tid)
+
+
 def bounds(path):
     import struct
     b = open(path, 'rb').read()
@@ -152,10 +173,20 @@ def check_single(cid):
 
 def cmd_rig(cid, args):
     s = state(cid)
+    src = opt(args, '--file', None)  # a model made elsewhere (the Meshy website, decimated by meshy_decimate.py)
+    if src:
+        dst = os.path.join(OUT, cid, 'model.glb')
+        if os.path.abspath(src) != os.path.abspath(dst):
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            open(dst, 'wb').write(open(src, 'rb').read())
     if not check_single(cid) and '--force' not in args:
         sys.exit('refused: the model does not look like one character (tools/art/meshy/%s/model.png)' % cid)
     b = guard(5, 'rig ' + cid)
-    body = {'input_task_id': s['model_task'], 'height_meters': float(opt(args, '--height', 1.8))}
+    body = {'height_meters': float(opt(args, '--height', 1.8))}
+    if src:
+        body['model_url'] = 'data:application/octet-stream;base64,' + base64.b64encode(open(src, 'rb').read()).decode()
+    else:
+        body['input_task_id'] = s['model_task']
     tid = call('POST', '/rigging', body)['result']
     log({'id': cid, 'kind': 'rigging', 'task': tid, 'balance_before': b})
     t = wait('rigging', tid)
@@ -231,6 +262,7 @@ def main(a):
         print(len(items), 'actions ->', os.path.relpath(out, ROOT))
         return
     if c == 'model': cmd_model(a[1], a[2], a[3:])
+    elif c == 'multi': cmd_multi(a[1], a[2], a[3:])
     elif c == 'rig': cmd_rig(a[1], a[2:])
     elif c == 'anim': cmd_anim(a[1], a[2], a[3:])
     elif c == 'motion': cmd_motion(a[1], a[2], a[3], a[4])

@@ -174,6 +174,13 @@ CHARACTERS = {
             'm_select': ('m_cast1', 0.0, 2.27, {}),
         },
     },
+    # modelled on the Meshy website (high poly), decimated with a baked normal map (meshy_decimate.py), rigged with
+    # `meshy.py rig --file`; his moves are BIDO's for now: BIDO's clips are copied from assets/models/bido.glb
+    # afterwards (tools/art/model_clips.py), only the walk and the run come from his rig
+    'kerrian': {
+        'height': 1.85,
+        'files': {'basic_walking': ['walk'], 'basic_running': ['run']},
+    },
 }
 
 FPS = 30

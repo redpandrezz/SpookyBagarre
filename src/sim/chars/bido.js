@@ -18,7 +18,10 @@ ENTITIES.charmKiss = {
   },
 };
 
-const moves = {
+// a fresh table at each call: the init passes (archetypes, specialTuning, reachFit) change the moves in place, so a
+// fighter that borrows this moveset (Kerrian) gets its own copy
+export function bidoMoves() {
+  return {
   ...normals({ power: 1.14, reach: 1.06, speed: 0.86, sfxS: 'punchHeavy', sfxM: 'punchHeavy', sfxL: 'punchHeavy', smashLunge: 0.7 }),
   // A while running: its own dash attack
   dashattack: dashAttack({ pose: 'lariat', boost: 10, fric: 22, dur: 40, iasa: 36, hits: [hb(8, 11, [0, 1.4, 0.95], 0.95, 13, 42, 54, 82, { sfx: 'punchHeavy', blood: 1.8, hitlag: 1.25 })] }),
@@ -138,13 +141,14 @@ const moves = {
     hits: [hb(6, 12, [0, 1.0, 0.35], 1.1, 8, 80, 40, 64, { sfx: 'heart', blood: 0.3, dir: 'radial', fx: 'love' })],
     onEnd(F) { F.va[4] = 0; },
   },
-};
+  };
+}
 
 export default {
   id: 'bido', name: 'BIDO', title: 'Des muscles, de l\'amour, des bisous qui cognent',
   color: '#ff6fb1',
   stats: { weight: 125, runSpeed: 7.8, walkSpeed: 3.2, airSpeed: 5.6, airAccel: 28, groundAccel: 54, friction: 42,
     jumpVel: 14.8, airJumpVel: 13, airJumps: 1, gravity: 1.06, fallSpeed: 19.5, height: 1.9, radius: 0.62 },
-  moves,
+  moves: bidoMoves(),
   specialsInfo: { n: 'Bisou (on le dirige)', s: 'Corde à sauter', u: 'Ballon-cœur', d: 'Flex (sous le charme)' },
 };
