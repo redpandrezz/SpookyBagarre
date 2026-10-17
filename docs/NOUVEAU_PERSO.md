@@ -96,7 +96,7 @@ python3 -m venv ~/.venvs/spooky && ~/.venvs/spooky/bin/pip install numpy Pillow
 
 **Saveur (facultatif) :** `LINES` / `WILD` du bar (`barLines.js`), commentateur (`KO_BY`), toktok (`ACCOUNTS`), son `choose_<id>`.
 
-**La grille de sélection** passe seule à 8 colonnes au-delà de 21 cases (`GRID_COLS`, `screens.js`) ; au-delà de 24, revoir sa taille.
+**La grille de sélection** : 8 colonnes, 24 cases au plus (`GRID_COLS`, `GRID_STEP`, `screens.js`) ; au-delà, revoir sa taille.
 
 ## 7 bis. Les animations à lui (Meshy, sur son rig)
 

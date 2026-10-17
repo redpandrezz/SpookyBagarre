@@ -50,7 +50,8 @@ export class FX {
         const nd = [dir[0] / m, dir[1] / m, dir[2] / m];
         const strong = kb > 95 || ev.smash;
         // (the little repeated hits of a multi-hit move barely flash: the victim must stay readable)
-        if (V) { if (strong || d >= 2.5) V.flash(strong ? '#ffffff' : '#ffd0c0', strong ? 0.14 : 0.08); else if (d >= 1.6) V.flash('#ffd0c0', 0.03); V.impulse(strong ? -3.5 : d < 2.5 ? -0.7 : -1.6); }
+        if (V && ev.nf) V.flash('#ff9a9a', 0.07); // (a hit without flinch: the flash tells it hurt)
+        else if (V) { if (strong || d >= 2.5) V.flash(strong ? '#ffffff' : '#ffd0c0', strong ? 0.14 : 0.08); else if (d >= 1.6) V.flash('#ffd0c0', 0.03); V.impulse(strong ? -3.5 : d < 2.5 ? -0.7 : -1.6); }
         if (Av) Av.impulse(1.2);
         // the models touch: the attacker's limb goes onto the victim's body where it was hit (src/render/rig/reach.js)
         const AF = ev.a >= 0 ? W.fighters[ev.a] : null, VF = W.fighters[ev.s];
@@ -106,7 +107,11 @@ export class FX {
         // a launch that will send far: a comet streak along the launch
         if (kb > 110 && !vid) P.hit.spawn('streak', ev.x + nd[0] * sz * 0.7, ev.y + nd[1] * sz * 0.7, ev.z, sz * 1.5, ang, 0.24, null, { stretch: 1.6 });
         const sparkC = ev.fx === 'zap' ? '#a8f0ff' : ev.fx === 'cheese' ? '#ffe28a' : ev.beat ? '#ffd23a' : '#fff4c0';
-        P.sparks(ev.x, ev.y, ev.z, strong ? 10 : 4, sparkC, strong ? 11 : 7, 0.25);
+        if (strong || !vid) P.sparks(ev.x, ev.y, ev.z, strong ? 10 : 4, sparkC, strong ? 11 : 7, 0.25); // the little and medium hits: the gold animation alone
+        // 3D shards thrown along the launch (particles.js shards): none for the little hits, a few for the medium ones, a
+        // sheaf for the strong ones; the attacker's colour (the pool holds 160, the oldest go first)
+        const nSh = strong ? Math.min(14, 6 + Math.floor(kb / 40)) : d >= 5 ? 4 : d >= 2.5 ? 2 : 0;
+        if (nSh && !sharp && (strong || !vid)) P.shards(ev.x, ev.y, ev.z, nd, nSh, ev.a >= 0 ? COLORS[ev.a] : '#ffd080', 0.8 + Math.min(0.8, kb / 200));
         if (ev.fx === 'cheese') P.burst('flake', ev.x, ev.y, ev.z, 10, '#f2d77a', { speed: 5 });
         if (ev.fx === 'slime') P.burst('drop', ev.x, ev.y, ev.z, 20, '#9aff4a', { speed: 6 });
         if (ev.fx === 'ketchup') { P.burst('drop', ev.x, ev.y, ev.z, 26, '#d0141a', { speed: 8 }); P.burst('drop', ev.x, ev.y, ev.z, 14, '#f0c020', { speed: 7 }); }
@@ -234,6 +239,17 @@ export class FX {
         if (F) { this.particles.smoke.kick(F.x - ev.d * 0.3, F.y, F.z, -ev.d, ev.turn ? 7 : 5, ev.turn ? 7 : 6, ev.turn ? 0.27 : 0.24); A && A.sfx('whoosh', this.pan(F.x), ev.turn ? 0.25 : 0.35); }
         break;
       }
+      // RONARE (src/sim/chars/ronare.js): the pint broken on the floor, the needle dropped, the jack's jolt
+      case 'pintSmash': {
+        P.burst('drop', ev.x, ev.y + 0.25, ev.z, 26, '#f0a020', { speed: 7 });
+        P.burst('drop', ev.x, ev.y + 0.25, ev.z, 12, '#fff8e6', { speed: 5 });
+        P.sparks(ev.x, ev.y + 0.2, ev.z, 8, '#e8f6ff', 8, 0.25);
+        if (A) A.sfx('glass', this.pan(ev.x), 0.9);
+        this.rig.shake(0.35);
+        break;
+      }
+      case 'turntable': P.sparks(ev.x, ev.y + 0.2, ev.z, 10, '#ff5ab8', 7, 0.3); break;
+      case 'jackStun': P.sparks(ev.x, ev.y, ev.z, 8, '#ffe28a', 6, 0.25); this.popups.text('BZZT !', ev.x, ev.y + 1, ev.z, '#ffe28a', 1.1); break;
       case 'cdDeny': {
         // pressed while it recharges: a dry click, a wisp from the hands, the arc under the feet blinks red
         const F = W.fighters[ev.s], V = this.view(ev.s);
@@ -269,7 +285,7 @@ export class FX {
         const [sx, sy] = this.popups.screenOf(ev.x, ev.y, ev.z);
         if (!(big && this.speedvid)) this.popups.zoomLines(Math.min(0.8, Math.max(0.2, sx)), Math.min(0.75, Math.max(0.25, sy)), big, T); // le KO a ses lignes en vidéo (speedVideo.js)
         this.renderer.kick('flash', big ? 0.75 : 0.35, { color: big ? '#fff3d6' : '#ffffff' });
-        if (big) { this.renderer.kick('chroma', 5); A && A.sfx('kozoom', this.pan(ev.x), 1); }
+        if (big) { this.renderer.kick('chroma', 5); if (A) { A.sfx('kozoom', this.pan(ev.x), 1); A.finishHit(this.pan(ev.x)); } } // the creator's FinishHit sound layered on the built-in one
         if (big && this.vid) this.vid.kill(ev.x, ev.y, ev.z, ev.a); // « Kill Spark Effect » : la décharge à deux ailes, à la couleur de celui qui frappe
         if (big && this.speedvid) this.speedvid.play(Math.min(0.85, Math.max(0.15, sx)), Math.min(0.8, Math.max(0.2, sy)), this.renderer.camera.position.distanceTo(_sv.set(ev.x, ev.y, ev.z)), speedTint(W.fighters[ev.a]), T);
         // the blow that kills: the body bursts open (gore.js)

@@ -132,11 +132,12 @@ const moves = {
       if (f === 8) W.emit('sfx', { s: F.slot, n: 'shred' });
       if (f >= 10 && f <= 46 && (f - 10) % 6 === 0) {
         const k = (f - 10) / 6;
-        shoot(W, F, 'proj', 13 + (k % 3), { look: 'note', r: 0.34, dmg: 2.2, ang: 40, kbb: 6, kbg: 8, life: 38, sfx: 'hitS', blood: 0.2, b: k % 3 },
+        // (17 Oct 2026, the creator: every note 1 %, without flinch, like Fox's blaster: they run through it)
+        shoot(W, F, 'proj', 13 + (k % 3), { look: 'note', r: 0.34, dmg: 1, ang: 40, kbb: 0, kbg: 0, noFlinch: true, life: 38, sfx: 'hitS', blood: 0.2, b: k % 3 },
           [0, 1.05 + 0.25 * DMath.sin(k * 1.9), 0.8], F.facing, 1.2 * DMath.sin(k * 2.3));
       }
       if (f === 52) {
-        shoot(W, F, 'proj', 15, { look: 'bignote', r: 0.55, dmg: 7, ang: 40, kbb: 40, kbg: 70, life: 40, sfx: 'guitarHitL', blood: 0.8, hitlag: 1.2 }, [0, 1.15, 0.8]);
+        shoot(W, F, 'proj', 15, { look: 'bignote', r: 0.55, dmg: 1, ang: 40, kbb: 0, kbg: 0, noFlinch: true, life: 40, sfx: 'guitarHitL', blood: 0.3 }, [0, 1.15, 0.8]);
         W.emit('sfx', { s: F.slot, n: 'riff' });
       }
     },

@@ -108,5 +108,14 @@
    640,
    320
   ]
+ },
+ "gold": {
+  "frames": 15,
+  "cols": 4,
+  "tile": [
+   448,
+   448
+  ],
+  "src": "hitsheet_cut.py"
  }
 }

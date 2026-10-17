@@ -61,6 +61,8 @@ export class Particles {
       bill: new Pool(scene, new THREE.PlaneGeometry(0.28, 0.14), lam({ side: THREE.DoubleSide }), 500),
       // liquid drops: glossy, a little see-through, stretched along their flight (a falling drop, not a ball)
       drop: new Pool(scene, new THREE.IcosahedronGeometry(0.05, STYLE.smooth ? 2 : 0), STYLE.smooth ? new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.06, metalness: 0, emissive: '#202024', transparent: true, opacity: 0.88 }) : lam({ emissive: '#111' }), 1200),
+      // impact shards: little 3D spikes that fly out of a blow along its launch, stretched along their flight (hitShards)
+      shard: new Pool(scene, new THREE.ConeGeometry(0.05, 0.42, 4).rotateX(Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#ffffff' }), 160),
       ring: new Pool(scene, new THREE.TorusGeometry(0.5, 0.06, 4, 16), add({ side: THREE.DoubleSide }), 80),
       heart: new Pool(scene, heartGeo(0.32, 0.12), add(), 240, { billboard: true }),
     };
@@ -109,6 +111,24 @@ export class Particles {
       const a = Math.random() * Math.PI * 2, e = (Math.random() - 0.3) * 2;
       const sp = speed * (0.4 + Math.random());
       P.add({ x, y, z, vx: Math.cos(a) * sp, vy: e * sp * 0.5, vz: Math.sin(a) * sp, life: life * (0.6 + Math.random() * 0.8), s: 1 + Math.random(), r: [col.r, col.g, col.b], rot: 0, spin: 10, g: 0, drag: 6, kind: 'spark', shrink: true });
+    }
+  }
+
+  // a sheaf of spikes at the point of impact, thrown mostly along the launch (dir) and a little everywhere; the colour of
+  // the attacker with a white-hot one among them; gone in about a third of a second (shrinking along their flight)
+  shards(x, y, z, dir, n, color = '#ffd080', power = 1) {
+    const P = this.pools.shard;
+    col.set(color);
+    for (let i = 0; i < n; i++) {
+      let rx = Math.random() * 2 - 1, ry = Math.random() * 2 - 1, rz = Math.random() * 2 - 1;
+      const rl = Math.hypot(rx, ry, rz) || 1;
+      const k = 0.75 + Math.random() * 0.6;
+      let vx = (dir ? dir[0] : 0) * k + rx / rl * 0.75, vy = (dir ? dir[1] : 0) * k + ry / rl * 0.75 + 0.15, vz = (dir ? dir[2] : 0) * k * 0.6 + rz / rl * 0.75;
+      const vl = Math.hypot(vx, vy, vz) || 1, sp = (8 + Math.random() * 11) * power;
+      const white = Math.random() < 0.4, life = 0.26 + Math.random() * 0.24;
+      P.add({ x, y, z, vx: vx / vl * sp, vy: vy / vl * sp, vz: vz / vl * sp, life, l0: life, s: 0.65 + Math.random() * 0.85,
+        r: white ? [1, 1, 1] : [Math.min(1, col.r * 1.15 + 0.1), Math.min(1, col.g * 1.15 + 0.1), Math.min(1, col.b * 1.15 + 0.1)],
+        rot: 0, spin: 0, g: 5, drag: 3.2, kind: 'shard' });
     }
   }
 
@@ -201,6 +221,11 @@ export class Particles {
           const v = Math.hypot(o.vx, o.vy, o.vz), b = o.kind === 'blood';
           dummy.lookAt(o.x + o.vx, o.y + o.vy, o.z + o.vz);
           dummy.scale.set(s * (b ? 0.66 : 0.72), s * (b ? 0.66 : 0.72), s * (1 + Math.min(b ? 2.8 : 2.2, v * (b ? 0.11 : 0.09))));
+        } else if (o.kind === 'shard') {
+          // a spike pointing where it flies, melting to nothing at the end of its short life
+          const v = Math.hypot(o.vx, o.vy, o.vz), k = Math.min(1, o.life / (o.l0 * 0.6));
+          dummy.lookAt(o.x + o.vx, o.y + o.vy, o.z + o.vz);
+          dummy.scale.set(s * 0.55 * k, s * 0.55 * k, s * (0.7 + v * 0.07) * k);
         } else if (o.kind === 'spark' && STYLE.smooth) {
           // sparks stretch along their velocity: bright streaks
           const v = Math.hypot(o.vx, o.vy, o.vz);

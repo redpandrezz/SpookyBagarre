@@ -17,6 +17,7 @@ export const SPECIAL_TUNING = {
   shark: { sp_n: { cd: 90 }, sp_s: { cd: 120 }, sp_d: { cd: 270 } },                         // spit, charge, the dive (intangible)
   catlady: { sp_n: { cd: 150 }, sp_s: { cd: 240 }, sp_d: { cd: 300 } },                      // cling cat, fat cat, the kittens
   pandrezz: { sp_n: { cd: 220 }, sp_s: { cd: 200 }, sp_d: { cd: 240 } },                     // kamehameha, CD-Man, Vinylman
+  ronare: { sp_n: { cd: 120 }, sp_s: { cd: 130 }, sp_d: { cd: 240 } },                       // records, the jack (reels in), the turntable (stuns)
   aboueb: { sp_n: { cd: 40 }, sp_s: { cd: 130 }, sp_d: { cd: 150 } },                       // reflector, curls grab (binds), the basketball (comes back)
   tices: { sp_n: { cd: 210 }, sp_s: { cd: 180 }, sp_d: { cd: 210 } },                        // flammekueche, rum and fire, the fart (stuns)
   omfu: { sp_n: { cd: 150 }, sp_s: { cd: 200 }, sp_d: { cd: 210 } },                       // the wrestler's hold, scratch waves, underground
@@ -31,6 +32,14 @@ export const SPECIAL_TUNING = {
 };
 
 // applied once to the character definitions (src/sim/chars/index.js)
+// the cooldowns the creator asked for (17 Oct 2026), in frames: the special comes back this long after it ends (the
+// HUD's dots show it). Ronare has Pandrezz's moveset, so his cooldowns too
+const COOLDOWN = {
+  pandrezz: { sp_s: 180, sp_d: 300 }, // CD-Man 3 s, Vinylman 5 s
+  ronare: { sp_d: 240 },                // the turntable (a stun all around him) 4 s
+  anbuu: { sp_n: 180 }, epektase: { sp_n: 180 },                        // the notes (1 % each, no flinch) 3 s
+};
+
 export function applySpecialTuning(CHARS) {
   for (const [id, moves] of Object.entries(SPECIAL_TUNING)) {
     const C = CHARS[id];
@@ -45,6 +54,7 @@ export function applySpecialTuning(CHARS) {
     // the side and down specials that move the fighter in the air (a dash, a stall): once until landing, a ledge or
     // being hit (Ultimate)
     for (const k of ['sp_s', 'sp_d']) { const M = C.moves[k]; if (M && (M.noGrav || M.vel)) M.airOnce = true; }
+    for (const [k, n] of Object.entries(COOLDOWN[id] || {})) if (C.moves[k]) C.moves[k].cdOwn = n;
     // the specials that paid far more than the fighter's own attacks when spammed (tools/dev/spamcheck.mjs, 16 Oct
     // 2026): one at a time, like Link's bomb (not again while the last one is out)
     for (const k of ONE_OUT[id] || []) if (C.moves[k]) C.moves[k].oneOut = true;
@@ -60,8 +70,8 @@ export function applySpecialTuning(CHARS) {
   }
 }
 
-const LAG = { micron: { sp_n: [44, 48] }, bubba: { sp_s: [50, 54] }, tung: { sp_s: [40, 44] }, epektase: { sp_n: [72, 78] } };
-const ONE_OUT = { micron: ['sp_n'], tung: ['sp_s', 'sp_d'], bubba: ['sp_n', 'sp_s'], parmesan: ['sp_s'], pprod: ['sp_s'], catlady: ['sp_n'], epektase: ['sp_n'] };
+const LAG = { micron: { sp_n: [44, 48] }, bubba: { sp_s: [50, 54] }, tung: { sp_s: [40, 44] } };
+const ONE_OUT = { micron: ['sp_n'], tung: ['sp_s', 'sp_d'], bubba: ['sp_n', 'sp_s'], parmesan: ['sp_s'], pprod: ['sp_s'], catlady: ['sp_n'] };
 
 // the up specials: [launcher damage x, its knockback growth x, carrying hits damage x, a sweet spot added first]
 // (aimed at the archetype's Ultimate up special: about 10 to 15 % in all; Tices like Ness's PK Thunder, SKANKY like
@@ -70,7 +80,7 @@ const RECOVERY = {
   frog: [1.25, 1.1, 1.2], micron: [1.5, 1.15, 1.5], bubba: [1.5, 1.12, 1.3], parmesan: [1.6, 1.12, 1.3], pika: [1.25, 1.1, 1.2],
   tung: [1.35, 1.1, 1.25], shark: [1.35, 1.1, 1.25], catlady: [1.1, 1.08, 1.1], pandrezz: [1.6, 1.2, 1.5], aboueb: [1.4, 1.12, 1.3],
   tices: [3.0, 1.3, 1.3], lolobiscotto: [1.75, 1.15, 1.3], jsan: [1.35, 1.12, 1.25], nymano: [1.25, 1.1, 1.2], bido: [1.7, 1.12, 1.2],
-  epektase: [1.1, 1.15, 1.1], pprod: [1.25, 1.12, 1.25], anbuu: [1.2, 1.1, 1.2],
+  epektase: [1.1, 1.15, 1.1], pprod: [1.25, 1.12, 1.25], anbuu: [1.2, 1.1, 1.2], ronare: [1.4, 1.12, 1.3],
   skanky: [1.25, 1.1, 1, { f: [4, 4], at: [0, 0.9, 0.5], r: 0.6, dmg: 18, ang: 80, kbb: 30, kbg: 92, sfx: 'hitL', blood: 1.5, dir: 'radial', hitlag: 1.3 }],
 };
 

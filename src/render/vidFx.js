@@ -18,8 +18,13 @@ const SETS = {
   alt:   { cols: 4, n: 11, tw: 352, th: 352, hue: 48 },
   slash: { cols: 3, n: 7,  tw: 576, th: 384, hue: 55 },
   kill:  { cols: 3, n: 15, tw: 640, th: 320, hue: 120 },
+  // l'animation de coup du créateur (planche 4 x 4, tools/art/hitsheet_cut.py) : un éclat jaune en pointes dont le grand
+  // éclair part vers le haut, puis des étincelles ; c'est l'effet des coups de base (jabs, tilts, aériens)
+  gold:  { cols: 4, n: 15, tw: 448, th: 448, hue: 48 },
 };
 const FPS = 30;
+const GOLD_ON = true; // l'animation du créateur pour les coups de base (false : retour à l'« Alternate Physical Hit »)
+const GOLD_AXIS = 1.75; // l'angle du grand éclair de la planche (radians, depuis la droite) : on le tourne le long du coup
 // la teinte de chaque joueur (J1 rouge, J2 bleu, J3 jaune, J4 vert : COLORS de sim/constants.js), en degrés
 const SLOT_HUE = [0, 215, 48, 135];
 // la teinte de certains effets de coups (le `fx` d'un coup), qui prime sur celle du joueur
@@ -137,11 +142,13 @@ export class VidFx {
     const heavy = strong || o.d >= 3.5;
     let kind = 'alt';
     if (sharp) kind = 'slash';
-    else if (spike && heavy) kind = 'spike';
-    else if (heavy) kind = (!strong && Math.random() < 0.3) ? 'alt' : 'phys';
+    else if (spike && strong) kind = 'spike';
+    else if (strong) kind = 'phys'; // only the strong blows keep the video's big animations; the little and medium ones show the gold one alone
+    if (kind === 'alt' && GOLD_ON) kind = 'gold'; // les coups de base : l'animation du créateur à la place du « Alternate Physical Hit »
     const hue = FX_HUE[fx] ?? (slot >= 0 && slot < SLOT_HUE.length ? SLOT_HUE[slot] : undefined);
     const j = (Math.random() - 0.5) * 0.5;
     switch (kind) {
+      case 'gold': this.play('gold', x, y, z, { size: 1.0 + sz * 1.9, rot: ang - GOLD_AXIS + j, hue, speed: 1.3 }); break;
       case 'phys': this.play('phys', x, y, z, { size: 1.5 + sz * 2.6, rot: ang - SETS.phys.axis, hue }); break;
       case 'spike': this.play('spike', x, y, z, { size: 1.6 + sz * 2.6, flip: Math.random() < 0.5 ? 1 : -1, hue }); break;
       case 'slash': this.play('slash', x, y, z, { size: 2.0 + sz * 2.2, rot: ang + j, hue }); break;

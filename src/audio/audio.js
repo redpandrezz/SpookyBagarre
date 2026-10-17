@@ -9,7 +9,7 @@ import { probeSfx, loadSfx } from './sfxfiles.js';
 const SFX_RULES = {
   // [max at once, min gap in seconds]
   default: [2, 0.045],
-  hitS: [2, 0.06], hitM: [2, 0.06], slap: [2, 0.06], zapS: [2, 0.07], zap: [1, 0.09], scratch: [1, 0.1], grate: [1, 0.1],
+  hitS: [2, 0.06], hitM: [2, 0.06], slap: [2, 0.06], zapS: [1, 0.12], zap: [1, 0.09], scratch: [1, 0.1], grate: [1, 0.1],
   wood: [2, 0.06], tung: [2, 0.08], chomp: [2, 0.07], pummel: [1, 0.12], cash: [1, 0.1],
   splat: [1, 0.12], splatter: [1, 0.25], hitL: [1, 0.1], punchHeavy: [1, 0.09],
   whoosh: [1, 0.12], click: [1, 0.15], land: [1, 0.08], thud: [1, 0.12], jump: [2, 0.05], jump2: [2, 0.05], charge: [1, 0.4],
@@ -450,7 +450,10 @@ export class Audio {
     if (kb > 150) this.crowd();
   }
 
-  ko(pan) { this.sfx('ko', pan, 1.1, 0, 1); this.sfx('splatter', pan, 0.8); this.crowd(); }
+  // the elimination (assets/sfx/elimination.ogg) when a fighter is out: layered on top of the KO sound that was there before
+  // finishHit (assets/sfx/finishHit.ogg): the blow that kills, at the moment of impact: layered on top of kozoom (fx.js)
+  finishHit(pan) { if (this.buffers.finishHit) this.sfx('finishHit', pan, 1.2, 0, 0.3); }
+  ko(pan) { if (this.buffers.elimination) this.sfx('elimination', pan, 1.2, 0, 0.3); this.sfx('ko', pan, 1.1, 0, 1); this.sfx('splatter', pan, 0.8); this.sfx('crowd', 0, 0.7, 0, 1); }
   crowd() { this.sfx('crowd', 0, 0.25); }
   countdown(n) { this.sfx('countHi', 0, 1); this.say(['', 'Un', 'Deux', 'Trois'][n] || String(n)); }
   go() { this.sfx('countGo', 0, 1); this.say('Bagarre !', 0.55, 1.1); }

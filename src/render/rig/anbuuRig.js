@@ -67,6 +67,20 @@ function orbObj() {
   return grp(b);
 }
 
+const HEAD_FIX = { walk: 0.4, run: 1.1 }; // radians of pitch given back to the head (neck 45 %, head 55 %)
+
+const _m0 = new THREE.Quaternion(), _m1 = new THREE.Quaternion();
+function mirrorLeg(B, rest) {
+  for (const n of ['thigh', 'shin', 'foot']) {
+    const r = B[n + '.L'], l = B[n + '.R'], rr = rest[n + '.L'] && rest[n + '.L'].local, rl = rest[n + '.R'] && rest[n + '.R'].local;
+    if (!l || !r || !rl || !rr) continue;
+    // the left bone's turn away from its own rest, mirrored across the body (x kept, y and z flipped), put on the right rest
+    _m0.copy(rl).invert().multiply(l.quaternion);
+    _m1.set(_m0.x, -_m0.y, -_m0.z, _m0.w);
+    r.quaternion.copy(rr).multiply(_m1);
+  }
+}
+
 export const ANBUU_RIG = {
   anbuu: {
     h: 1.74, guard: 'boxer', idleClip: 1, crouch: 0.02, wide: 0.02, lean: 2, stride: 0.9,
@@ -78,7 +92,19 @@ export const ANBUU_RIG = {
       orb: { bone: 'hips', at: [0, 1.0, 0], build: () => hidden(orbObj()) },
     },
     reach: { far: 0.85, moves: { jab1: 'hand.R', jab3: 'hand.R', smash: false, usmash: false, dsmash: false, ftilt: true, ftilt2: true, ftilt3: true, dtilt: true, fair: true, bair: true, dair: true, ledgeattack: true } },
+    // moving along the floor (the glide clip leans his whole body, and the head with it: it hung far back): the head is
+    // turned back upright on top of the clip (pitch only, shown only: poser.js out.wiggle → animator.js clip.add)
+    extra(pose, F, M, t, out) {
+      if (!F.grounded || (F.state !== 'run' && F.state !== 'walk')) return null;
+      const k = HEAD_FIX[F.state];
+      out.wiggle = { neck: [k * 0.45, 0, 0], head: [k * 0.55, 0, 0] };
+      return null;
+    },
     update(V, F, o, t) {
+      // his right leg: the hover / jump clips (Meshy text to motion) leave it twisted (thigh turned ~30° about its axis, the
+      // foot turned out sideways and pointed like a ballerina's); it takes the left leg's pose, mirrored
+      // (not while walking, running or striking: those clips swing the legs on purpose)
+      if (F.state !== 'move' && F.state !== 'walk' && F.state !== 'run') mirrorLeg(V.rig.bones, V.rig.rest);
       // floating: the whole body hovers (the shadow, drawn apart, stays on the floor)
       const lying = F.state === 'down' || F.state === 'dead' || F.state === 'ledge' || F.state === 'grabbed';
       if (!lying) V.root.position.y += FLOAT + Math.sin(t * 2.4 + (F.slot || 0)) * 0.04;

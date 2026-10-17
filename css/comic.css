@@ -42,8 +42,8 @@
 .px .cs-room small, .px .cs-room i { color: var(--ink); text-shadow: none; }
 .px .cs-room b { color: var(--blood); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; text-shadow: 2px 2px 0 var(--ink); }
 
-.px .cs-grid2 { left: 12px; top: 46px; width: 345px; height: 147px; }
-.px .cs-tile { width: 46px; height: 46px; border: 0; outline: 0; border-radius: 0; background: none; box-shadow: none !important; transform: none !important; filter: none !important;
+.px .cs-grid2 { left: 12px; top: 46px; width: 350px; height: 147px; }
+.px .cs-tile { width: 42px; height: 46px; border: 0; outline: 0; border-radius: 0; background: none; box-shadow: none !important; transform: none !important; filter: none !important;
   animation: tile-in .4s cubic-bezier(.2, 1.6, .4, 1) both; animation-delay: calc(var(--i) * 16ms + 120ms); }
 @keyframes tile-in { from { transform: translateY(-30px) rotate(-12deg) scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
 .px .cs-tile .ti { position: absolute; inset: 0; transition: transform .12s ease-out, filter .12s; }
@@ -51,7 +51,7 @@
 .px .cs-tile .tb::before, .px .cs-tile .tb::after { content: ''; position: absolute; inset: 2px; clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%); }
 .px .cs-tile .tb::before { background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--cc) 70%, #fff) 0, var(--cc) 38%, color-mix(in srgb, var(--cc) 30%, var(--ink)) 100%); }
 .px .cs-tile .tb::after { background: var(--tone); -webkit-mask-image: linear-gradient(180deg, transparent 20%, #000 90%); mask-image: linear-gradient(180deg, transparent 20%, #000 90%); }
-.px .cs-tile img { position: absolute; left: -1px; top: -5px; width: 48px; height: 48px; transition: transform .14s cubic-bezier(.2, 1.8, .4, 1);
+.px .cs-tile img { position: absolute; left: -3px; top: -5px; width: 48px; height: 48px; transition: transform .14s cubic-bezier(.2, 1.8, .4, 1);
   filter: drop-shadow(1px 0 0 var(--ink)) drop-shadow(-1px 0 0 var(--ink)) drop-shadow(0 -1px 0 var(--ink)); }
 .px .cs-tile .q { position: absolute; inset: 0 0 8px; font-size: 36px; line-height: 40px; color: var(--ink); text-shadow: none; -webkit-text-stroke: 0; }
 .px .cs-tile .nm { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; padding: 0 3px; background: var(--ink); clip-path: polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%);

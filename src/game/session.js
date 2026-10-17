@@ -102,7 +102,7 @@ export class Session {
         if (owner !== this.me) return;
         const i = L.slots.findIndex((s) => !s);
         if (i < 0) return;
-        const c = CHAR_ORDER[Math.floor(Math.random() * CHAR_ORDER.length)];
+        const c = CHAR_ORDER.includes(op.char) ? op.char : CHAR_ORDER[Math.floor(Math.random() * CHAR_ORDER.length)]; // (op.char : le perso choisi par celui qui l'ajoute, sinon au hasard)
         L.slots[i] = { owner, dev: null, name: 'CPU', char: c, cursor: CHAR_ORDER.indexOf(c), ready: true, cpu: L.rules.cpuLevel || 2 };
         break;
       }

@@ -10,14 +10,17 @@ import { ENTITIES } from '../entities.js';
 import { steerX } from './recovery.js';
 import { DMath } from '../dmath.js';
 
-// the money of the neutral A: a coin, a handful of coins, a wad of bills, a diamond, a gold bar, thrown in front
+// the money of the neutral A: a coin, a handful of coins, a wad of bills, a diamond, a gold bar, thrown in front.
+// (17 Oct 2026, the creator: they went much too far (5.4 m); now ~3 m from him, the first four 1 to 2 % without flinch, like Fox's
+// blaster; only the gold bar sends, a little, and the neutral A then rests 1 s: GOLD_CD)
 const LOOT = [
-  { look: 'coin', dmg: 2, kbb: 4, kbg: 6, r: 0.3 },
-  { look: 'coinpile', dmg: 2.4, kbb: 4, kbg: 6, r: 0.36 },
-  { look: 'billwad', dmg: 2.8, kbb: 5, kbg: 8, r: 0.36 },
-  { look: 'diamond', dmg: 3.2, kbb: 6, kbg: 10, r: 0.34 },
-  { look: 'goldbar', dmg: 5.5, kbb: 30, kbg: 56, r: 0.4 },
+  { look: 'coin', dmg: 1, r: 0.3 },
+  { look: 'coinpile', dmg: 1.3, r: 0.36 },
+  { look: 'billwad', dmg: 1.6, r: 0.36 },
+  { look: 'diamond', dmg: 2, r: 0.34 },
+  { look: 'goldbar', dmg: 4, kbb: 26, kbg: 44, r: 0.4 },
 ];
+const LOOT_LIFE = 8, GOLD_CD = 60;
 function lootThrow(n, next) {
   const L = LOOT[n];
   return {
@@ -25,12 +28,13 @@ function lootThrow(n, next) {
     onFrame(F, W, f) {
       F.va[7] = f < 5 ? n + 1 : 0;
       if (f === 5) {
-        shoot(W, F, 'proj', 17, { look: L.look, r: L.r, dmg: L.dmg, ang: n < 4 ? 50 : 40, kbb: L.kbb, kbg: L.kbg, fkb: n < 4 ? 14 : undefined, life: 17, spin: 14, link: n < 4 ? 1 : 0,
-          sfx: n === 4 ? 'clank' : 'cash', blood: 0.3, hitlag: n === 4 ? 1.1 : 0.6 }, [0, 1.3, 0.6], F.facing, n === 4 ? 1 : 0.5);
+        const gold = n === 4;
+        shoot(W, F, 'proj', 17, { look: L.look, r: L.r, dmg: L.dmg, ang: 40, kbb: gold ? L.kbb : 0, kbg: gold ? L.kbg : 0, noFlinch: !gold, life: gold ? LOOT_LIFE + 2 : LOOT_LIFE, spin: 14,
+          sfx: gold ? 'clank' : 'cash', blood: 0.3, hitlag: gold ? 1.1 : 0.6 }, [0, 1.3, 0.6], F.facing, gold ? 1 : 0.5);
         W.emit('loot', { s: F.slot, n, x: F.x + DMath.sin(F.facing) * 0.7, y: F.y + 1.3, z: 0 });
       }
     },
-    onEnd(F) { F.va[7] = 0; },
+    onEnd(F) { F.va[7] = 0; if (n === 4) F.cd.a = F.cdMax.a = GOLD_CD; },
   };
 }
 // the old PC (side special): thrown in an arc, it blows up on whatever it touches

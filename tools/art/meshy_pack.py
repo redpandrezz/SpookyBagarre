@@ -191,6 +191,13 @@ CHARACTERS = {
             'a_hdash': ('m_hdash', 0.0, 1.2, {'still': True, 'tilt': 0.1}),
         },
     },
+    # RONARE (21st, 17 Oct 2026): the model from the Meshy site (tools/blender/fbx_textured.py, rigged by
+    # meshy.py rig --glb), Pandrezz's moveset for now: every clip of assets/models/pandrezz.glb moved onto his rig
+    # (meshy_transfer.py assets/models/pandrezz.glb rig.glb anims/transferred.glb assets/models/pandrezz.glb --ref idle)
+    'ronare': {
+        'height': 1.85,
+        'files': {},
+    },
 }
 
 FPS = 30
@@ -345,10 +352,12 @@ def pack(cid, list_only=False):
             sources.append((p, names))
     ad = os.path.join(d, 'anims')
     # clips moved over from another rig of the same character (tools/art/meshy_transfer.py --pack), already named
-    if os.path.exists(os.path.join(ad, 'transferred.glb')):
-        sources.append((os.path.join(ad, 'transferred.glb'), None))
+    # (several: transferred*.glb, one per source rig)
     for f in sorted(os.listdir(ad)) if os.path.isdir(ad) else []:
-        if f.endswith('.glb') and f[:-4] not in C['files'] and f != 'transferred.glb':
+        if f.startswith('transferred') and f.endswith('.glb'):
+            sources.append((os.path.join(ad, f), None))
+    for f in sorted(os.listdir(ad)) if os.path.isdir(ad) else []:
+        if f.endswith('.glb') and f[:-4] not in C['files'] and not f.startswith('transferred'):
             sources.append((os.path.join(ad, f), ['m_' + f[:-4]]))
     clips = []
     for p, names in sources:

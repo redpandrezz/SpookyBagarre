@@ -35,7 +35,7 @@ export function createFighter(slot, info, spawn) {
     prevMx: 0, tapDir: 0, tapT: -999, dashReq: 0, dashT: 0, runDir: 1, skidT: 0, // double-tap dash / run (Smash)
     xArm: true, yArm: true, xRelT: -999, yRelT: -999, downT: -999, dropReq: -999, // the stick back in the centre between two taps; double down
     xLowT: -999, xFlick: false, flickT: -999, adHelpless: false, // the stick last seen in the centre; a flick already used (one dash per flick)
-    cd: { n: 0, s: 0, d: 0 }, cdMax: { n: 1, s: 1, d: 1 }, // special cooldowns (frames) (only a move asking for its own: cdOwn)
+    cd: { n: 0, s: 0, d: 0, a: 0 }, cdMax: { n: 1, s: 1, d: 1, a: 1 }, // special cooldowns (frames) (only a move asking for its own: cdOwn); a: the neutral A (PPROD's gold bar)
     grabbedBy: -1, grabbing: -1, grabT: 0,
     lastHitBy: -1, lastHitTick: -9999, pendingLaunch: null, launchKb: 0,
     ledgeCD: 0, ledgeGrabs: 0, ledgeT: 0, ledgeNx: 0, ledgeNz: 0,
@@ -388,6 +388,7 @@ function readActions(F, I, W, S) {
       if (k === 'u') { startMove(F, W, 'usmash'); return; }
       if (k === 'd') { startMove(F, W, 'dsmash'); return; }
       if (k === 'f' || k === 'b') { startMove(F, W, 'smash'); return; }
+      if (F.cd.a > 0) { W.emit('cdDeny', { s: F.slot, k: 'a' }); return; } // (the neutral A recharging)
       startMove(F, W, 'jab1'); return;
     } else {
       F.ffBlock = W.tick + 6; F.ffArm = -999; // the down of a down air is not a fast fall
@@ -973,7 +974,7 @@ export function respawn(F, W) {
   F.damage = 0; F.shield = SHIELD_MAX; F.size = 1; F.dizzy = 0; F.slip = 0; F.speedMul = 1; F.stun = 0; F.bloodied = 0; F.usedUp = false; F.upN = 0; F.airOnce = 0; F.lockLand = 0; // a clean body for the new stock
   F.sleep = 0; F.dance = 0; F.ctrlBy = -1; F.ctrlT = 0; F.pizzas = 0; F.buried = 0; F.carryBy = -1; F.carryT = 0; F.capOut = 0; F.guitarOut = 0; F.lie = 0; F.levT = 0; F.lifted = 0;
   F.grounded = false; F.invuln = RESPAWN_INVULN;
-  F.cd.n = F.cd.s = F.cd.d = 0;
+  F.cd.n = F.cd.s = F.cd.d = F.cd.a = 0;
   setState(F, 'respawn');
   W.emit('respawn', { s: F.slot });
 }

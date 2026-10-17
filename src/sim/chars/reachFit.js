@@ -15,6 +15,7 @@ export const REACH_FIT = {
   shark: { jab1: 1.39, jab3: 1.5, ftilt: 1.03, dtilt: 1.35, fair: 0.76, bair: 1.07 },
   catlady: { jab1: 1.31, jab2: 1.29, jab3: 1.21, ftilt: 1.16, dtilt: 1.19, fair: 1.16, bair: 1.1 },
   pandrezz: { jab3: 1.47, ftilt: 1.48, dtilt: 1.48, fair: 1.45, bair: 1.23 },
+  ronare: { jab3: 1.47, ftilt: 1.48, dtilt: 1.48, fair: 1.45, bair: 1.23 }, // (Pandrezz's moveset, same size)
   aboueb: { jab2: 1.4, jab3: 1.45, ftilt: 1.46, dtilt: 1.48, fair: 1.48, bair: 1.34 },
   tices: { jab1: 1.31, jab2: 1.36, jab3: 1.62, ftilt: 1.51, dtilt: 1.5, fair: 1.53, bair: 1.22 },
   omfu: { jab2: 1.44, jab3: 1.52, ftilt: 1.42, dtilt: 1.44, fair: 1.08, bair: 1.33 },

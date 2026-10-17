@@ -56,7 +56,7 @@ ENTITIES.proj = {
       owner: e.owner, key: 'e' + e.id + (e.keyx || ''), x: e.x, y: e.y, z: e.z, r: e.r, dmg: e.dmg, ang: e.ang, kbb: e.kbb, kbg: e.kbg, fkb: e.fkb, // (keyx: a new blow of the same thing)
       dir: e.dirMode || 'vel', vx: e.vx, vz: e.vz, ox: e.x - e.vx * 0.05, oz: e.z - e.vz * 0.05, ent: e.id, src: 'proj',
       sfx: e.sfx, blood: e.blood, rehit: e.rehit, effect: e.effect, stun: e.stun, hitlag: e.hitlag || 0.8, fx: e.look,
-      unblockable: e.unblockable, multi: e.multi, move: 'proj:' + e.look,
+      unblockable: e.unblockable, multi: e.multi, move: 'proj:' + e.look, noLaunch: e.noLaunch, noFlinch: e.noFlinch,
       onHit: (V, W2) => {
         if (!e.pierce) e.dead = true;
         if (e.custom) { const C = ENTITIES[e.custom]; if (C && C.onHitFighter) C.onHitFighter(e, V, W2); }

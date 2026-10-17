@@ -143,14 +143,17 @@ export class MatchView {
       const shUp = F.state === 'shield';
       if (shUp && !V.wasShield && this.fx.audio) this.fx.audio.sfx('shield', this.fx.pan(F.x));
       V.wasShield = shUp;
-      // launched: a thin trail of smoke puffs behind (where it is flying from), denser and bigger the harder the
-      // blow, behind the fighters and half transparent so it never hides anything
+      // launched: a trail of the run's cartoon smoke (src/render/smoke.js) along the flight, left where the fighter has
+      // been, thrown back a little and shrinking away; thicker and bigger the harder the blow, behind the fighters
       const lk = F.launchKb || 0;
       V.smokeT = (V.smokeT || 0) + dt;
-      if (F.state === 'hitstun' && F.hitlag <= 0 && lk > 55 && !F.grounded && Math.hypot(F.kx || 0, F.ky || 0) > 4 && V.smokeT > (lk > 130 ? 0.03 : 0.05)) {
+      if (F.state === 'hitstun' && F.hitlag <= 0 && lk > 55 && !F.grounded && Math.hypot(F.kx || 0, F.ky || 0) > 4 && V.smokeT > (lk > 130 ? 0.025 : 0.045) && !W.mg && V.root.visible) {
         V.smokeT = 0;
-        const p = V.root.position;
-        this.particles.hit.spawn('smoke', p.x + (Math.random() - 0.5) * 0.2, p.y + 0.85 + (Math.random() - 0.5) * 0.2, p.z, 0.38 + Math.min(0.55, lk / 320), Math.random() * 6, 0.42, lk > 150 ? '#d8d2c8' : '#f2eee6', { soft: true, spin: (Math.random() - 0.5) * 2 });
+        const p = V.root.position, vx = F.vx || 0, vy = F.vy || 0, m = Math.hypot(vx, vy) || 1, big = Math.min(1, lk / 220);
+        const r = 0.26 + big * 0.3, bx = -vx / m, by = -vy / m;
+        const jx = (Math.random() - 0.5) * 0.3, jy = (Math.random() - 0.5) * 0.3;
+        // fy far below: these puffs float in the air, no floor to squash against
+        this.particles.smoke.cloud(p.x + jx, p.y + 0.9 + jy, p.z, -99, bx * (1.2 + big * 1.6) + jx * 3, by * (1.2 + big * 1.6) + jy * 3, (Math.random() - 0.5) * 0.8, r, 0.5 + big * 0.35);
       }
       // the fall: a glint and a whoosh as the fast fall kicks in (Ultimate), then a cone of wind from the feet of a
       // fighter dropping fast, opening behind it along its flight (src/render/windCone.js)

@@ -84,8 +84,9 @@ const moves = {
       const k = (f - 6) / 5;
       if (f >= 6 && f <= 36 && (f - 6) % 5 === 0) {
         const last = k === 6;
-        shoot(W, F, 'proj', last ? 13 : 11, { look: 'jazznote', b: k, r: last ? 0.45 : 0.32, dmg: last ? 6 : 1.8, ang: last ? 40 : 30,
-          kbb: last ? 34 : 4, kbg: last ? 66 : 6, life: 48, sfx: 'zapS', blood: 0.1, hitlag: last ? 1.1 : 0.6 },
+        // (17 Oct 2026, the creator: every note 1 %, without flinch, like Fox's blaster: they run through it)
+        shoot(W, F, 'proj', last ? 13 : 11, { look: 'jazznote', b: k, r: last ? 0.45 : 0.32, dmg: 1, ang: 30,
+          kbb: 0, kbg: 0, noFlinch: true, life: 48, sfx: 'zapS', blood: 0.1 },
           [0, 1.3 + Math.sin(k * 1.3) * 0.2, 0.6], F.facing, Math.sin(k * 1.7) * 1.5);
         W.emit('anbuuLick', { s: F.slot, n: k });
       }

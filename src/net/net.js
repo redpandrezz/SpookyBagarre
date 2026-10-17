@@ -1,7 +1,7 @@
 // Peer-to-peer networking. The host's browser is the server: it runs the match and sends snapshots.
 // Transport "peer" = WebRTC through PeerJS (free public signalling server, no server of our own);
 // transport "local" = BroadcastChannel between tabs of the same browser (tests, no internet needed).
-export const PROTOCOL = 7; // 7: new arena (zinzin) ; 6: la version de redpandrezz fusionnée (boucliers, esquives, priorité des coups) ; 5: new arena (mirror) ; 4: rollback (every machine runs the match)
+export const PROTOCOL = 10; // 10: Ronare's own moveset ; 9: cooldowns, notes without flinch, PPROD's loot ; 8: new fighter (ronare) ; 7: new arena (zinzin) ; 6: la version de redpandrezz fusionnée (boucliers, esquives, priorité des coups) ; 5: new arena (mirror) ; 4: rollback (every machine runs the match)
 const PREFIX = 'spookybagarre-v' + PROTOCOL + '-';
 const LETTERS = 'ABCDEFGHJKMNPQRSTUVWXYZ';
 

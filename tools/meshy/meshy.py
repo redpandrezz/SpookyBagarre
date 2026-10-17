@@ -7,7 +7,9 @@ tools/meshy/ledger.jsonl (not published). A failed task is never retried automat
   python tools/meshy/meshy.py library [--search kick] [--category Fighting]     (free: the animation library, json)
   python tools/meshy/meshy.py model <id> <image> [--polys 30000] [--tex 2k] [--pose none]   (image to 3D, about 30 credits; a prop: --pose none)
   python tools/meshy/meshy.py multi <id> <front.png,back.png> [--polys 30000]       (several views to 3D, already posed)
-  python tools/meshy/meshy.py rig <id> [--height 1.8] [--file model.glb]           (5 credits; --file: a local model)
+  python tools/meshy/meshy.py rig <id> [--height 1.8] [--glb <file.glb>]          (5 credits; --glb: a model made elsewhere,
+                                                                                   e.g. on the Meshy site: tools/blender/fbx_textured.py
+                                                                                   or tools/art/meshy_decimate.py; --file: the same)
   python tools/meshy/meshy.py anim <id> <name> <action_id> [<action_id> ...]      (3 credits per action)
   python tools/meshy/meshy.py motion <id> <name> <seconds> "<prompt>"             (text to motion 10 + animation)
 Files go to tools/art/meshy/<id>/ (state.json keeps the task ids).
@@ -173,18 +175,13 @@ def check_single(cid):
 
 def cmd_rig(cid, args):
     s = state(cid)
-    src = opt(args, '--file', None)  # a model made elsewhere (the Meshy website, decimated by meshy_decimate.py)
-    if src:
-        dst = os.path.join(OUT, cid, 'model.glb')
-        if os.path.abspath(src) != os.path.abspath(dst):
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            open(dst, 'wb').write(open(src, 'rb').read())
-    if not check_single(cid) and '--force' not in args:
+    glb = opt(args, '--glb', None) or opt(args, '--file', None)
+    if not glb and not check_single(cid) and '--force' not in args:
         sys.exit('refused: the model does not look like one character (tools/art/meshy/%s/model.png)' % cid)
     b = guard(5, 'rig ' + cid)
     body = {'height_meters': float(opt(args, '--height', 1.8))}
-    if src:
-        body['model_url'] = 'data:application/octet-stream;base64,' + base64.b64encode(open(src, 'rb').read()).decode()
+    if glb:  # (sent inside the request, as a data URI)
+        body['model_url'] = 'data:application/octet-stream;base64,' + base64.b64encode(open(glb, 'rb').read()).decode()
     else:
         body['input_task_id'] = s['model_task']
     tid = call('POST', '/rigging', body)['result']

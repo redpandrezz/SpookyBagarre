@@ -229,7 +229,7 @@ export class World {
       blood: h.blood ?? 1, rehit: h.rehit, effect: h.effect, unblockable: h.unblockable, shieldMul: h.shieldMul,
       grabAir: h.grabAir, smash: !!M.charge, charge: M.charge ? (F.mv.charge || 0) / M.charge.max : 0,
       onHit: h.onHit, hitsOwner: false, move: F.move, spike: h.spike, wide: h.wide,
-      fx: h.fx, drag: h.drag, noLaunch: h.noLaunch, stun: h.stun,
+      fx: h.fx, drag: h.drag, noLaunch: h.noLaunch, noFlinch: h.noFlinch, stun: h.stun,
       // the quick hits of a string (jabs, the first side tilts) keep the victim in front at low damage
       link: h.link ?? (M.next ? 1 : 0),
     };
@@ -473,7 +473,7 @@ export class World {
       if (A && (A.state === 'move' || A.state === 'idle')) { startGrab(A, V, this); if (hv.onHit) hv.onHit(V, this, hv); return true; }
       return false;
     }
-    if (V.grabbing >= 0) releaseGrab(V, this);
+    if (V.grabbing >= 0 && !hv.noFlinch) releaseGrab(V, this);
     let dmg = hv.dmg || 0;
     if (A && CHARS[A.char].beatBonus && dmg > 0 && this.onBeat()) { dmg *= 1.25; hv = { ...hv, hitlag: (hv.hitlag || 1) * 1.25, beat: 1 }; }
     V.damage = Math.min(999, V.damage + dmg);
@@ -486,6 +486,13 @@ export class World {
     // hitlag (Smash Ultimate's formula): every blow freezes both fighters a moment, the heavy ones longer
     const hitlag = Math.min(26, Math.floor((dmg * 0.65 + 6) * (hv.hitlag || 1) * (hv.smash ? 1 + hv.charge * 0.5 : 1)));
 
+    // no flinch (like Fox's blaster in Smash): the damage counts and shows (a flash, a spark), but the victim is not
+    // stopped, not frozen, not pushed: it keeps running, attacking, through the stream
+    if (hv.noFlinch) {
+      this.emit('hit', { s: V.slot, a: hv.owner, x: px, y: py, z: pz, d: dmg, kb: 0, sfx: hv.sfx || 'hitS', b: (hv.blood ?? 1) * 0.3, small: 1, nf: 1, fx: hv.fx, m: hv.move });
+      if (hv.onHit) hv.onHit(V, this, hv);
+      return true;
+    }
     if (hv.effect === 'stun') {
       V.move = null; setState(V, 'stunned'); V.stun = hv.stun || 60;
       V.hitlag = 3;

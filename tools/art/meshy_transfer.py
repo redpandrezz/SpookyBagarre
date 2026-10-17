@@ -39,6 +39,13 @@ for s, S in (('Left', 'L'), ('Right', 'R')):
     MIXAMO.update({s + 'Shoulder': S + '_Clavicle', s + 'Arm': S + '_Upperarm', s + 'ForeArm': S + '_Forearm', s + 'Hand': S + '_Hand',
                    s + 'UpLeg': S + '_Thigh', s + 'Leg': S + '_Calf', s + 'Foot': S + '_Foot', s + 'ToeBase': S + '_ToeBase'})
 
+# the game's bone names (a model already packed for the game, assets/models/<id>.glb: tripo_pack.ALIAS) -> Tripo
+# names: a packed character's clips, as the game plays them (windows, mirrored copies, Uthana moves), move onto
+# another skeleton (Ronare, 17 Oct 2026: Pandrezz's whole set onto his Meshy rig)
+GAME = {v: k for k, v in T.ALIAS.items()}
+# a Meshy character packed for the game (tools/art/meshy_pack.py BONES): three spine bones, spine1 in the middle
+GAME_MESHY = {**GAME, 'spine': 'Waist', 'spine1': 'Spine01', 'chest': 'Spine02', 'toe.L': 'L_ToeBase', 'toe.R': 'R_ToeBase'}
+
 AIM = {'NeckTwist01': 'Head'}
 for S in 'LR':
     AIM.update({S + '_Clavicle': S + '_Upperarm', S + '_Upperarm': S + '_Forearm', S + '_Forearm': S + '_Hand',
@@ -59,6 +66,12 @@ def load(path):
         for n in j['nodes']:
             n['orig'] = n.get('name')
             n['name'] = MIXAMO.get(re.sub(r'^mixamorig\d*:', '', n.get('name') or ''), n.get('name'))
+        return j, b
+    if any(n.get('name') == 'hips' for n in j['nodes']):   # a model packed for the game
+        M = GAME_MESHY if any(n.get('name') == 'spine1' for n in j['nodes']) else GAME
+        for n in j['nodes']:
+            n['orig'] = n.get('name')
+            n['name'] = M.get(n.get('name'), n.get('name'))
         return j, b
     if any(n.get('name') == 'Hips' for n in j['nodes']):   # a Meshy rig (a Tripo one already has these names)
         for n in j['nodes']:
