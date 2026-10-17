@@ -28,6 +28,7 @@ export const SPOTS = [
     return [[x1, z1, Math.atan2(x - x1, z - z1) + 0.5, 'table'], [x2, z2, Math.atan2(x - x2, z - z2) - 0.5, 'table']];
   }),
   [DANCE.x - 0.7, DANCE.z + 0.4, 0.4, 'dance'], [DANCE.x + 0.75, DANCE.z - 0.3, -0.5, 'dance'],
+  [DANCE.x + 0.1, DANCE.z + 1.15, 0.15, 'dance'], // (21 friends around the player since Ronare and Kerrian: one spot each)
   [-9.0, -3.4, -1.25, 'darts'],
   [-6.2, 4.9, 0.6, 'coffin'], [7.2, 4.6, -0.5, 'pumpkin'],
   [9.6, -0.9, -1.0, 'jukebox'],
